@@ -171,19 +171,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) =
                     className="mt-1 w-full accent-game-primary"
                   />
                 </label>
-                <p className="text-xs leading-relaxed text-game-text-muted">
-                  字体已固定：大标题为站酷小薇体，正文与标签为思源黑体（Noto Sans SC），不使用宋体。
-                </p>
               </section>
 
               <section className="mb-6 border-t border-game-border pt-4">
                 <h3 className="title-underlay-sm mb-3 text-xs font-bold uppercase tracking-wide text-game-accent">
                   输出模式
                 </h3>
-                <p className="mb-3 text-xs leading-relaxed text-gray-500">
-                  切换后将<strong>自动启用/禁用</strong>下列条目（标题须与世界书一致，见代码{' '}
-                  <code className="rounded bg-white px-1">WB_ENTRY_ALIASES</code>）：单 API 模式开启「变量列表」「变量更新规则」「变量输出格式」「单api输出格式」，并关闭「多api输出格式-主/副」与旧版单条「多API输出格式」。双 API
-                  模式则关闭前四项，开启「多api输出格式-主」「多api输出格式-副」，副路在脚本中另行注入前三项全文。
+                <p className="mb-3 text-xs leading-relaxed text-game-text-muted">
+                  切换后将自动开关世界书条目，请勿手动修改顺序1~6的条目
                 </p>
                 <div className="flex flex-col gap-2">
                   <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-game-border bg-white/90 px-3 py-2">
@@ -218,13 +213,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) =
               {settings.outputMode === 'dual' && (
                 <section className="border-t border-game-border pt-4">
                   <h3 className="title-underlay-sm mb-3 text-xs font-bold uppercase tracking-wide text-game-accent">
-                    第二路 API（OpenAI 兼容）
+                    副api设置
                   </h3>
-                  <p className="mb-3 text-xs text-gray-500">
-                    请保持角色卡脚本库中的「多API串联」启用：主 API 回复完成后，会用{' '}
-                    <code className="rounded bg-white px-1">generateRaw</code> 调用此处配置的接口，把变量更新追加到同一楼层。
-                    连接测试仍使用 <code className="rounded bg-white px-1">generate</code> +{' '}
-                    <code className="rounded bg-white px-1">custom_api</code>（仅测连通性）。
+                  <p className="mb-3 text-xs leading-relaxed text-game-text-muted">
+                    请保持角色卡脚本库中的「多API」启用；生成新楼层后等待一段时间更新变量。
                   </p>
 
                   <label className="mb-3 block">
@@ -341,14 +333,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) =
                       )}
                     </button>
                   </div>
-                  {testHint && <p className="mt-2 text-xs text-gray-600">{testHint}</p>}
+                  {testHint && <p className="mt-2 text-xs text-game-text-muted">{testHint}</p>}
 
                   <div className="mt-4 border-t border-game-border pt-4">
                     <h4 className="title-underlay-sm mb-2 text-xs font-bold uppercase tracking-wide text-game-accent">
                       变量补救
                     </h4>
-                    <p className="mb-2 text-xs text-gray-500">
-                      当<strong>最新一楼</strong>剧情已生成但侧边栏变量未更新时，可手动对最新 assistant 楼层重新请求第二路（不重复主 API 叙事）。
+                    <p className="mb-2 text-xs leading-relaxed text-game-text-muted">
+                      当最新一楼剧情已生成但侧边栏变量未更新时，点击下方按钮更新变量↓
                     </p>
                     <button
                       type="button"

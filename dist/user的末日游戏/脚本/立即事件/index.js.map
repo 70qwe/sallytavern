@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","mappings":"mBAAAA,EAAE,KACAC,QAAQC,KAAK,kD","sources":["src://tavern_helper_template/src/user的末日游戏/脚本/立即事件/index.ts"],"sourcesContent":["$(() => {\n  console.info('[user的末日游戏] 立即事件脚本占位：可按世界书关键字扩展 injectPrompts');\n});\n"],"names":["$","console","info"],"sourceRoot":""}
