@@ -28,6 +28,10 @@
   "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
+  "css.lint.unknownProperties": "ignore",
+  "css.lint.vendorPrefix": "ignore",
+  "html.validate.scripts": false,
+  "html.validate.styles": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },

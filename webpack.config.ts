@@ -29,6 +29,12 @@ interface Entry {
   html?: string;
 }
 
+/** 禁止 Sass 输出 @charset，避免多个 vue 样式块内联进同一 `<style>` 时在中间出现 @charset 触发 CSS 校验错误 */
+const sassLoader = {
+  loader: 'sass-loader',
+  options: { sassOptions: { charset: false } },
+};
+
 function parse_entry(script_file: string) {
   const dir = path.dirname(script_file);
   const html =
@@ -206,7 +212,7 @@ function use_classic_script_output(entry: Entry): boolean {
 
 /** 与 `src/user的末日游戏/index.yaml` 中 `$.load(...index.html)` 的 CDN 前缀一致，避免生产包仍指向 localhost 导致跨域。 */
 const TAVERN_UI_DIST_CDN_BASE =
-  'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/user的末日游戏/界面/末日游戏/';
+  'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/界面/末日游戏/';
 
 /**
  * load 进酒馆父页面后相对路径会指向酒馆域名，故用 base + 外链脚本。
@@ -303,7 +309,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             },
             {
               test: /\.(sa|sc)ss$/,
-              use: ['postcss-loader', 'sass-loader'],
+              use: ['postcss-loader', sassLoader],
               resourceQuery: /raw/,
               type: 'asset/source',
               exclude: /node_modules/,
@@ -337,7 +343,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             },
             {
               test: /\.(sa|sc)ss$/,
-              use: ['postcss-loader', 'sass-loader'],
+              use: ['postcss-loader', sassLoader],
               resourceQuery: /url/,
               type: 'asset/inline',
               exclude: /node_modules/,
@@ -407,7 +413,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       { loader: 'vue-style-loader', options: { ssrId: true } },
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
-                      'sass-loader',
+                      sassLoader,
                     ],
                     exclude: /node_modules/,
                   },
@@ -426,7 +432,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       'style-loader',
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
-                      'sass-loader',
+                      sassLoader,
                     ],
                     exclude: /node_modules/,
                   },
@@ -443,7 +449,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       MiniCssExtractPlugin.loader,
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
-                      'sass-loader',
+                      sassLoader,
                     ],
                     exclude: /node_modules/,
                   },
