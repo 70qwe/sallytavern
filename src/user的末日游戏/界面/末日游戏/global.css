@@ -1,0 +1,530 @@
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source not "../../../../dist";
+
+@theme {
+  /* 大标题：站酷小薇体；次级/正文：思源黑体（Noto Sans SC），禁止 serif 回退宋体 */
+  --font-heading: "ZCOOL XiaoWei", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  /* Tailwind font-heading / font-body 工具类 */
+  --font-game: var(--font-heading);
+  --font-sans: var(--font-body);
+
+  /* 档案夹 / 末日调查风 */
+  --color-game-bg: #2f2822;
+  --color-game-paper: #ebe2cf;
+  --color-game-paper-bright: #f6f0e4;
+  --color-game-primary: #6b5344;
+  --color-game-secondary: #a89272;
+  --color-game-accent: #a32b2b;
+  --color-game-accent-dark: #6e1a1a;
+  --color-game-text: #2a221c;
+  --color-game-text-muted: #5c4f44;
+  --color-game-border: #8a7358;
+  --color-game-ink: #1a1512;
+
+  --radius-game: 0.35rem;
+
+  --title-underlay-bg: rgba(163, 43, 43, 0.14);
+  --title-underlay-bg-sm: rgba(163, 43, 43, 0.09);
+
+  --shadow-dossier: 3px 4px 0 rgba(26, 21, 18, 0.35);
+  --shadow-paper: 0 2px 8px rgba(26, 21, 18, 0.12), 0 12px 28px rgba(26, 21, 18, 0.08);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-height: 100dvh;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  color: var(--color-game-text);
+  font-family: var(--font-body);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--color-game-bg);
+  background-image:
+    radial-gradient(ellipse 160px 110px at 2% 38%, rgba(120, 22, 22, 0.2), transparent 78%),
+    radial-gradient(ellipse 120px 80px at 98% 22%, rgba(110, 18, 18, 0.16), transparent 75%),
+    radial-gradient(ellipse 14px 10px at 8% 62%, rgba(140, 28, 28, 0.22), transparent 55%),
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(163, 43, 43, 0.12), transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(0, 0, 0, 0.25), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.18), transparent 40%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    ),
+    linear-gradient(165deg, #3a322c 0%, #2a2420 45%, #1f1b17 100%);
+}
+
+#root {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 主壳层：内嵌档案纸 + 少量血迹装饰 */
+.th-game-shell {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+
+.th-game-shell::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* 叠在主页面上方、弹窗下方；pointer-events:none 不挡点击 */
+.th-game-shell::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(ellipse 200px 130px at 0% 8%, rgba(150, 32, 32, 0.32), transparent 78%),
+    radial-gradient(ellipse 170px 95px at 100% 85%, rgba(130, 25, 25, 0.28), transparent 76%),
+    radial-gradient(ellipse 52px 38px at 94% 4%, rgba(140, 28, 28, 0.2), transparent 68%),
+    radial-gradient(ellipse 12px 16px at 6% 92%, rgba(120, 22, 22, 0.35), transparent 52%),
+    radial-gradient(ellipse 9px 11px at 48% 3%, rgba(160, 35, 35, 0.28), transparent 48%),
+    radial-gradient(ellipse 8px 8px at 72% 48%, rgba(130, 24, 24, 0.2), transparent 45%);
+  mix-blend-mode: multiply;
+}
+
+/* 勿对直接子元素设 position:relative，否则会盖掉子界面弹窗的 position:fixed */
+.th-game-shell > .th-game-main {
+  position: relative;
+  z-index: 1;
+}
+
+/* 泛黄档案纸 */
+.note-paper {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-game-paper);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 12%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 24px,
+      rgba(138, 115, 88, 0.04) 24px,
+      rgba(138, 115, 88, 0.04) 25px
+    );
+  border: 1px solid var(--color-game-border);
+  box-shadow: var(--shadow-dossier), var(--shadow-paper);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 档案纸四角血迹（侧栏、剧情区、弹窗内容） */
+.note-paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 140px 88px at 102% -4%, rgba(150, 35, 35, 0.22), transparent 76%),
+    radial-gradient(ellipse 110px 150px at -6% 104%, rgba(130, 28, 28, 0.2), transparent 78%),
+    radial-gradient(ellipse 11px 14px at 78% 88%, rgba(140, 30, 30, 0.28), transparent 52%),
+    radial-gradient(ellipse 8px 9px at 14% 22%, rgba(120, 24, 24, 0.22), transparent 48%),
+    radial-gradient(ellipse 7px 7px at 55% 8%, rgba(150, 32, 32, 0.18), transparent 45%);
+}
+
+.note-paper > * {
+  position: relative;
+  z-index: 1;
+}
+
+.note-paper::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  z-index: 2;
+  width: 28px;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #5a5a5a, #3a3a3a);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dossier-slip {
+  position: relative;
+}
+
+.dossier-slip:hover {
+  transform: translateY(-2px) rotate(0deg) !important;
+  box-shadow: 4px 6px 0 rgba(26, 21, 18, 0.38), 0 16px 32px rgba(26, 21, 18, 0.12);
+}
+
+/* 区块标题：红色档案条 */
+.title-underlay {
+  display: inline-block;
+  padding: 0.2em 0.55em 0.28em;
+  border-radius: 0.15rem;
+  background: linear-gradient(180deg, var(--color-game-accent) 0%, var(--color-game-accent-dark) 100%);
+  color: #f8f0e6;
+  font-family: var(--font-heading);
+  letter-spacing: 0.02em;
+  font-size: 0.92em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.title-underlay-sm {
+  display: inline-block;
+  padding: 0.1em 0.38em 0.14em;
+  border-radius: 0.12rem;
+  font-size: inherit;
+  line-height: inherit;
+  font-family: var(--font-body);
+  background-color: var(--title-underlay-bg-sm);
+  color: var(--color-game-accent-dark);
+  font-weight: 600;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.glass-panel {
+  background: rgba(235, 226, 207, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-game-border);
+}
+
+.button-retro {
+  background: var(--color-game-paper-bright);
+  border: 1px solid var(--color-game-border);
+  box-shadow: 2px 3px 0 rgba(26, 21, 18, 0.28);
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.15s ease;
+}
+
+.button-retro:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 3px 4px 0 rgba(26, 21, 18, 0.32);
+  background: #fffdf8;
+}
+
+.button-retro:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 2px 0 rgba(26, 21, 18, 0.25);
+}
+
+.dossier-dock {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(47, 40, 34, 0.95) 0%, rgba(35, 30, 26, 0.98) 100%);
+  border-top: 2px solid var(--color-game-border);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dossier-dock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 130px 70px at 0% 55%, rgba(140, 28, 28, 0.24), transparent 75%),
+    radial-gradient(ellipse 10px 12px at 92% 35%, rgba(120, 22, 22, 0.3), transparent 50%);
+}
+
+.dossier-dock .button-retro {
+  color: var(--color-game-paper-bright);
+  background: rgba(235, 226, 207, 0.12);
+  border-color: rgba(138, 115, 88, 0.55);
+}
+
+.dossier-dock .button-retro:hover:not(:disabled) {
+  background: rgba(235, 226, 207, 0.22);
+}
+
+.dossier-header-strip {
+  background: linear-gradient(180deg, rgba(235, 226, 207, 0.95), rgba(220, 208, 188, 0.9));
+  border-bottom: 2px solid var(--color-game-border);
+}
+
+.dossier-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.75rem;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+  background: linear-gradient(90deg, var(--color-game-accent-dark), var(--color-game-accent));
+  border-bottom: 2px solid var(--color-game-ink);
+  color: #f8f0e6;
+}
+
+.dossier-modal-title {
+  align-items: center;
+  line-height: 1.25;
+}
+
+.dossier-modal-header > .dossier-modal-title svg {
+  color: #ffffff !important;
+}
+
+.dossier-modal-close {
+  background: var(--color-game-paper-bright);
+  border: 1px solid rgba(255, 252, 245, 0.65);
+  box-shadow: 2px 2px 0 rgba(26, 21, 18, 0.22);
+  color: var(--color-game-accent);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease,
+    background-color 0.15s ease;
+}
+
+.dossier-modal-close:hover {
+  background: #fffdf6;
+  transform: translateY(-1px);
+  box-shadow: 3px 3px 0 rgba(26, 21, 18, 0.26);
+}
+
+.dossier-modal-close:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(26, 21, 18, 0.2);
+}
+
+.dossier-modal-close svg {
+  color: var(--color-game-accent) !important;
+  stroke: var(--color-game-accent) !important;
+}
+
+.chat-bubble-assistant {
+  background: var(--color-game-paper-bright);
+  border: 1px solid var(--color-game-border);
+  box-shadow: 2px 3px 0 rgba(26, 21, 18, 0.15);
+  border-top-left-radius: 0.15rem;
+}
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, rgba(163, 43, 43, 0.12), rgba(107, 83, 68, 0.08));
+  border: 1px solid rgba(163, 43, 43, 0.35);
+  box-shadow: 2px 3px 0 rgba(26, 21, 18, 0.1);
+  border-top-right-radius: 0.15rem;
+}
+
+.chat-avatar-assistant {
+  background: var(--color-game-paper);
+  border: 2px solid var(--color-game-border);
+  color: var(--color-game-accent);
+}
+
+.chat-avatar-user {
+  background: linear-gradient(145deg, var(--color-game-accent), var(--color-game-accent-dark));
+  border: 2px solid var(--color-game-accent-dark);
+  color: #f8f0e6;
+}
+
+.puppy-theater {
+  border: 1px dashed var(--color-game-secondary);
+  background: rgba(255, 252, 245, 0.7);
+}
+
+.puppy-theater summary {
+  font-family: var(--font-heading);
+  font-size: 0.95em;
+  color: var(--color-game-accent-dark);
+}
+
+.forum-file-row {
+  background: var(--color-game-paper-bright);
+  border: 1px solid var(--color-game-border);
+  box-shadow: 1px 2px 0 rgba(26, 21, 18, 0.12);
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    background-color 0.15s ease;
+}
+
+.forum-file-row:hover {
+  transform: translateX(4px);
+  box-shadow: 3px 4px 0 rgba(26, 21, 18, 0.2);
+  background: #fffdf8;
+}
+
+.forum-post-detail {
+  background: var(--color-game-paper-bright);
+  border: 2px solid var(--color-game-border);
+  box-shadow: var(--shadow-dossier), var(--shadow-paper);
+}
+
+.polaroid-slot {
+  background: #fffdf8;
+  border: 2px solid #d8cfc0;
+  border-bottom-width: 10px;
+  box-shadow: 2px 3px 0 rgba(26, 21, 18, 0.2);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+}
+
+.polaroid-slot:hover {
+  transform: translateY(-3px) rotate(-0.5deg);
+  box-shadow: 4px 6px 0 rgba(26, 21, 18, 0.28);
+}
+
+.polaroid-price {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-game-accent);
+  letter-spacing: 0.04em;
+}
+
+.dossier-card {
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid var(--color-game-border);
+  box-shadow: 1px 2px 0 rgba(26, 21, 18, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dossier-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 2px 4px 0 rgba(26, 21, 18, 0.16);
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.safe-pb-nav {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.safe-pt-header {
+  padding-top: max(0.25rem, env(safe-area-inset-top));
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-game-secondary);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.mask-fade {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  html {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  button,
+  input,
+  select,
+  optgroup,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  #root,
+  .th-game-shell {
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-heading,
+  .font-game {
+    font-family: var(--font-heading);
+  }
+
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-body);
+  }
+
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    display: block;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+iframe:fullscreen,
+iframe:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  border: none !important;
+  background: var(--color-game-bg);
+}
+
+#root:fullscreen,
+#root:-webkit-full-screen,
+.th-game-fs:fullscreen,
+.th-game-fs:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  max-height: none;
+  background: var(--color-game-bg);
+}

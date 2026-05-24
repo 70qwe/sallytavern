@@ -1,0 +1,601 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "default": {},
+  "type": "object",
+  "properties": {
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "日期": {
+          "default": "",
+          "type": "string"
+        },
+        "地点": {
+          "default": "",
+          "type": "string"
+        },
+        "天气": {
+          "default": "",
+          "type": "string"
+        },
+        "生存天数": {
+          "default": 1,
+          "type": "number"
+        },
+        "季节": {
+          "default": "",
+          "type": "string"
+        },
+        "当前赛季": {
+          "default": "",
+          "type": "string"
+        },
+        "赛季预计持续时间": {
+          "default": "",
+          "type": "string"
+        }
+      }
+    },
+    "主角": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "姓名": {
+          "default": "幸存者",
+          "type": "string"
+        },
+        "uid": {
+          "default": "X-00010086",
+          "type": "string"
+        },
+        "种族": {
+          "default": "人类",
+          "type": "string"
+        },
+        "昵称": {
+          "default": "[未命名]",
+          "type": "string"
+        },
+        "梦魇欲魔": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "名称": {
+              "default": "梦魇欲魔",
+              "type": "string",
+              "enum": [
+                "梦魇欲魔"
+              ]
+            },
+            "阶段": {
+              "default": "一",
+              "type": "string",
+              "enum": [
+                "一",
+                "二",
+                "三",
+                "四"
+              ]
+            },
+            "能力列表": {
+              "default": {
+                "一": "",
+                "二": "",
+                "三": "",
+                "四": ""
+              },
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "enum": [
+                  "一",
+                  "二",
+                  "三",
+                  "四"
+                ]
+              },
+              "additionalProperties": {
+                "type": "string"
+              },
+              "required": [
+                "一",
+                "二",
+                "三",
+                "四"
+              ]
+            }
+          }
+        },
+        "sp": {
+          "default": 0,
+          "type": "number"
+        },
+        "污染值": {
+          "default": 0,
+          "type": "number"
+        },
+        "饱食度": {
+          "default": 100,
+          "type": "number"
+        },
+        "力量": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "体质": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "敏捷": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "角色总评": {
+          "default": "E",
+          "$ref": "#/$defs/__schema1"
+        },
+        "角色总评评语": {
+          "default": "",
+          "type": "string"
+        }
+      }
+    },
+    "任务列表": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "标题": {
+            "default": "",
+            "type": "string"
+          },
+          "描述": {
+            "default": "",
+            "type": "string"
+          },
+          "奖励": {
+            "default": "",
+            "type": "string"
+          },
+          "进度": {
+            "default": 0,
+            "type": "number"
+          }
+        }
+      }
+    },
+    "背包": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "已用格子": {
+          "default": 0,
+          "type": "number"
+        },
+        "格子上限": {
+          "default": 30,
+          "type": "number"
+        }
+      }
+    },
+    "物品栏": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "名称": {
+            "default": "",
+            "type": "string"
+          },
+          "数量": {
+            "default": 1,
+            "type": "number"
+          },
+          "最大堆叠": {
+            "default": 99,
+            "type": "number"
+          },
+          "描述": {
+            "default": "",
+            "type": "string"
+          },
+          "稀有度": {
+            "default": "D",
+            "$ref": "#/$defs/__schema1"
+          }
+        }
+      }
+    },
+    "狩猎名单": {
+      "default": {
+        "进行中": {},
+        "已奴隶": {}
+      },
+      "type": "object",
+      "properties": {
+        "进行中": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "姓名": {
+                "default": "",
+                "type": "string"
+              },
+              "uid": {
+                "default": "",
+                "type": "string"
+              },
+              "昵称": {
+                "default": "",
+                "type": "string"
+              },
+              "种族": {
+                "default": "人类",
+                "type": "string"
+              },
+              "污染值": {
+                "default": 0,
+                "type": "number"
+              },
+              "身份": {
+                "default": "",
+                "type": "string"
+              },
+              "年龄": {
+                "default": 20,
+                "type": "number"
+              },
+              "精液质量": {
+                "default": "C",
+                "$ref": "#/$defs/__schema1"
+              },
+              "天赋": {
+                "default": "",
+                "type": "string"
+              },
+              "力量": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "体质": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "敏捷": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "沦陷度": {
+                "default": 0,
+                "type": "number"
+              },
+              "当前位置": {
+                "default": "",
+                "type": "string"
+              },
+              "当前状态": {
+                "default": "",
+                "type": "string"
+              },
+              "预计产出SP": {
+                "default": 0,
+                "type": "number"
+              }
+            }
+          }
+        },
+        "已奴隶": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "姓名": {
+                "default": "",
+                "type": "string"
+              },
+              "uid": {
+                "default": "",
+                "type": "string"
+              },
+              "昵称": {
+                "default": "",
+                "type": "string"
+              },
+              "种族": {
+                "default": "人类",
+                "type": "string"
+              },
+              "污染值": {
+                "default": 0,
+                "type": "number"
+              },
+              "身份": {
+                "default": "",
+                "type": "string"
+              },
+              "年龄": {
+                "default": 20,
+                "type": "number"
+              },
+              "精液质量": {
+                "default": "C",
+                "$ref": "#/$defs/__schema1"
+              },
+              "天赋": {
+                "default": "",
+                "type": "string"
+              },
+              "力量": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "体质": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "敏捷": {
+                "$ref": "#/$defs/__schema0"
+              },
+              "当前位置": {
+                "default": "",
+                "type": "string"
+              },
+              "当前状态或用途": {
+                "default": "",
+                "type": "string"
+              },
+              "预计产出SP": {
+                "default": 0,
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "进行中",
+        "已奴隶"
+      ]
+    },
+    "玩家论坛": {
+      "default": {
+        "帖子": {},
+        "私信": {}
+      },
+      "type": "object",
+      "properties": {
+        "帖子": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "主题": {
+                "default": "",
+                "type": "string"
+              },
+              "发帖人": {
+                "default": "",
+                "type": "string"
+              },
+              "内容": {
+                "default": "",
+                "type": "string"
+              },
+              "发帖时间": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "私信": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "发送人": {
+                "default": "",
+                "type": "string"
+              },
+              "内容": {
+                "default": "",
+                "type": "string"
+              },
+              "发送时间": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "帖子",
+        "私信"
+      ]
+    },
+    "交易行": {
+      "default": {
+        "系统商城": {},
+        "玩家交易": {}
+      },
+      "type": "object",
+      "properties": {
+        "系统商城": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "default": "",
+                "type": "string"
+              },
+              "价格": {
+                "default": 0,
+                "type": "number"
+              },
+              "备注": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "玩家交易": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "物品名称": {
+                "default": "",
+                "type": "string"
+              },
+              "售卖人": {
+                "default": "",
+                "type": "string"
+              },
+              "上架时间": {
+                "default": "",
+                "type": "string"
+              },
+              "价格": {
+                "default": 0,
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "系统商城",
+        "玩家交易"
+      ]
+    },
+    "副本列表": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "副本名称": {
+            "default": "",
+            "type": "string"
+          },
+          "副本内容": {
+            "default": "",
+            "type": "string"
+          },
+          "副本难度": {
+            "default": "",
+            "type": "string"
+          },
+          "副本地点": {
+            "default": "",
+            "type": "string"
+          },
+          "副本奖励": {
+            "default": "",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "排行榜": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "排名": {
+            "default": 1,
+            "type": "number"
+          },
+          "上榜人昵称": {
+            "default": "",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "界面对话": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "角色": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "player"
+            ]
+          },
+          "文本": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "角色",
+          "文本"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "__schema0": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前": {
+          "default": 10,
+          "type": "number"
+        },
+        "上限": {
+          "default": 30,
+          "type": "number"
+        }
+      }
+    },
+    "__schema1": {
+      "type": "string",
+      "enum": [
+        "E",
+        "D",
+        "C",
+        "B",
+        "A",
+        "S",
+        "SS",
+        "SSS"
+      ]
+    }
+  }
+}

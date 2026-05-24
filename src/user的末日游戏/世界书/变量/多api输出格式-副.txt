@@ -1,0 +1,16 @@
+# 多 API 模式 · 副 API（第二路 generateRaw 专用）
+
+你会收到：本回合 `<maintext>`、以及《变量列表》《变量更新规则》《变量输出格式》全文（主对话里这些条目已关闭，此处须遵守）。
+
+## 任务
+
+- **只输出** `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`）。
+- **禁止** `<maintext>`、`<option>`、长叙事。
+- **禁止** Patch 路径 `/下一步行动` 及其子路径。
+- 本回合无需改变量时：仍输出完整外壳，`<JSONPatch>` 为 `[]`，`<Analysis>` 写 `no stat change`。
+
+## 自检
+
+- `path` 以 `/` 开头，与变量列表一致（如 `/世界/地点`）。
+- 世界.地点/天气/季节与 maintext 同场景；uid 占位时改为姓名拼音首字母+-00010086。
+- 与 maintext 无逻辑冲突。
