@@ -220,6 +220,35 @@ const TAVERN_UI_DIST_CDN_BASE =
  * - `TAVERN_HELPER_LIVE_ORIGIN`：如 `http://127.0.0.1:5500`，用于 Go Live 本地测：**任意 mode** 下都会把 base 指到该 origin（避免生产包仍写 CDN、与 $.load 本机地址不一致导致 MIME/CORS）
  * - production 且未设上述变量：使用 jsdelivr 与 index.yaml 一致
  */
+/**
+ * `$('…').load(cdnUrl)` 跨域时 jQuery 会丢弃响应里所有 `<script>`（含内联），外部 index.js 永远不会执行。
+ * 须由正则/替换脚本在 load 回调里 `$.getScript(cdnUrl + 'index.js')`。
+ * 另：load 通常只插入 `<body>` 片段，故把 `<style>` 挪到 body 开头，避免只剩背景无组件。
+ */
+function pack_jquery_load_ui_html_for_cross_origin_load(): webpack.WebpackPluginInstance {
+  return {
+    apply(compiler) {
+      compiler.hooks.afterEmit.tap('PackJqueryLoadUiHtml', compilation => {
+        const out_dir = compilation.outputOptions.path;
+        if (!out_dir) {
+          return;
+        }
+        const html_path = path.join(out_dir, 'index.html');
+        if (!fs.existsSync(html_path)) {
+          return;
+        }
+        let html = fs.readFileSync(html_path, 'utf8');
+        const style_match = html.match(/<style[\s\S]*?<\/style>/i);
+        if (style_match && !html.includes('<body><style')) {
+          html = html.replace(style_match[0], '');
+          html = html.replace(/(<body[^>]*>)/i, `$1${style_match[0]}`);
+        }
+        fs.writeFileSync(html_path, html);
+      });
+    },
+  };
+}
+
 function tavern_embed_base_href(is_production: boolean): string {
   if (process.env.TAVERN_HELPER_BASE_HREF) {
     return process.env.TAVERN_HELPER_BASE_HREF.replace(/\/?$/, '/');
@@ -496,6 +525,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             cache: false,
           }),
           ...(jquery_load_ui ? [] : [new HtmlInlineScriptWebpackPlugin()]),
+          ...(jquery_load_ui ? [pack_jquery_load_ui_html_for_cross_origin_load()] : []),
           new MiniCssExtractPlugin(),
           new HTMLInlineCSSWebpackPlugin({
             styleTagFactory({ style }: { style: string }) {

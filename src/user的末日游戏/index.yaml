@@ -286,7 +286,12 @@
         ```
         <div id="th-user-apocalypse-ui" style="width:100%;box-sizing:border-box;min-height:max(560px,min(88dvh,960px));"></div>
         <script>
-        $('#th-user-apocalypse-ui').load('https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/界面/末日游戏/index.html');
+        (function () {
+          var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';
+          $('#th-user-apocalypse-ui').load(u + 'index.html', function () {
+            $.getScript(u + 'index.js');
+          });
+        })();
         </script>
         ```
       来源:
