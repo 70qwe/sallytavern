@@ -2,8 +2,11 @@
   "scripts": {
     "build:dev": "webpack --mode development",
     "build": "webpack --mode production",
+<<<<<<< HEAD
     "build:local": "node scripts/tavern-ui-local-base.mjs --mode production",
     "watch:local": "node scripts/tavern-ui-local-base.mjs --mode development --watch --progress",
+=======
+>>>>>>> 1edcc383164d8213f030dcdfabc0b6563966ae13
     "watch": "webpack --mode development --watch --progress",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,scss,html,vue}\" --no-error-on-unmatched-pattern",
     "lint": "eslint",
@@ -95,8 +98,11 @@
     "jsonrepair": "^3.14.0",
     "klona": "^2.0.6",
     "lodash": "^4.18.1",
+<<<<<<< HEAD
     "lucide-react": "^1.16.0",
     "motion": "^12.40.0",
+=======
+>>>>>>> 1edcc383164d8213f030dcdfabc0b6563966ae13
     "pinia": "^3.0.4",
     "pixi.js": "^8.18.1",
     "react": "^19.2.6",

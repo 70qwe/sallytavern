@@ -28,6 +28,7 @@
   "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
+<<<<<<< HEAD
   "css.lint.unknownProperties": "ignore",
   "css.lint.vendorPrefix": "ignore",
   "html.validate.scripts": false,
@@ -35,6 +36,10 @@
   "files.associations": {
     "*.css": "tailwindcss",
     "dist/**/index.html": "plaintext"
+=======
+  "files.associations": {
+    "*.css": "tailwindcss"
+>>>>>>> 1edcc383164d8213f030dcdfabc0b6563966ae13
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
