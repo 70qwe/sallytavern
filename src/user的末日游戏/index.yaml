@@ -286,12 +286,19 @@
       内容: |-
         <script>
         (function () {
+          var $ = window.parent && window.parent.jQuery;
+          if (!$) {
+            console.error('[末日游戏] 找不到 jQuery');
+            return;
+          }
           var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';
-          var v = '20260525';
-          $('body').load(u + 'index.html?' + v, function () {
-            $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true }).fail(function (_x, _s, err) {
-              console.error('[末日游戏] index.js 加载失败', err || _s);
-            });
+          var v = '20260525b';
+          $(document.body).load(u + 'index.html?' + v, function () {
+            $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true })
+              .done(function () { console.info('[末日游戏] index.js 已加载'); })
+              .fail(function (_x, _s, err) {
+                console.error('[末日游戏] index.js 加载失败', err || _s);
+              });
           });
         })();
         </script>
