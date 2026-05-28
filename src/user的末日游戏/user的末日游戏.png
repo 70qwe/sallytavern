@@ -116,7 +116,11 @@
               "enabled": true,
               "buttons": []
             },
-            "data": {}
+            "data": {},
+            "export_with": {
+              "data": true,
+              "button": true
+            }
           },
           {
             "name": "变量结构",
@@ -129,7 +133,11 @@
               "enabled": true,
               "buttons": []
             },
-            "data": {}
+            "data": {},
+            "export_with": {
+              "data": true,
+              "button": true
+            }
           },
           {
             "name": "立即事件",
@@ -142,7 +150,11 @@
               "enabled": true,
               "buttons": []
             },
-            "data": {}
+            "data": {},
+            "export_with": {
+              "data": true,
+              "button": true
+            }
           },
           {
             "name": "游戏历史",
@@ -155,7 +167,11 @@
               "enabled": true,
               "buttons": []
             },
-            "data": {}
+            "data": {},
+            "export_with": {
+              "data": true,
+              "button": true
+            }
           },
           {
             "name": "多API串联",
@@ -168,7 +184,11 @@
               "enabled": true,
               "buttons": []
             },
-            "data": {}
+            "data": {},
+            "export_with": {
+              "data": true,
+              "button": true
+            }
           }
         ],
         "variables": {}
