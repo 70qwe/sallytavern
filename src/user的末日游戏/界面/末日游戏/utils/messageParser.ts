@@ -500,7 +500,8 @@ export function loadRecentStoryChatLines(): StoryChatLine[] {
     if (lastId < 0) {
       return [];
     }
-    const rows = getChatMessages(`0-${lastId}`, { hide_state: 'unhidden' });
+    // 须含被酒馆标记为 hidden 的楼层，否则多轮对话后往往只剩最新一楼
+    const rows = getChatMessages(`0-${lastId}`, { hide_state: 'all' });
     const slice = pickRowsForLastTwoAssistantRounds(rows);
     return slice.map(row => rowToStoryLine(row)).filter((line): line is StoryChatLine => line !== null);
   } catch (e) {
