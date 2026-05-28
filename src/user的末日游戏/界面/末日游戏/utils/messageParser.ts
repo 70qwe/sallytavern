@@ -461,6 +461,13 @@ function pickRowsForLastTwoAssistantRounds(
   let startIndex: number;
   if (assistantIndices.length >= 2) {
     startIndex = assistantIndices[assistantIndices.length - 2]!;
+    if (
+      startIndex > 0 &&
+      rows[startIndex - 1]?.role === 'user' &&
+      rows[startIndex - 2]?.role === 'assistant'
+    ) {
+      startIndex -= 1;
+    }
   } else {
     startIndex = assistantIndices[0]!;
     if (startIndex > 0 && rows[startIndex - 1]?.role === 'user') {
@@ -469,6 +476,14 @@ function pickRowsForLastTwoAssistantRounds(
   }
 
   return rows.slice(startIndex);
+}
+
+function assistantRowFallbackDisplayText(raw: string): string {
+  let s = stripThinkingBlocks(raw);
+  s = s.replace(/<StatusPlaceHolderImpl\s*\/?>/gi, '');
+  s = removeTagBlocks(s, [...PRESET_EXTRA_DISPLAY_TAGS, ...NON_NARRATIVE_BLOCK_TAGS]);
+  s = stripRemainingAngleTags(s);
+  return normalizeStoryWhitespace(s);
 }
 
 function rowToStoryLine(row: { message_id: number; role: string; message?: string }): StoryChatLine | null {
@@ -481,7 +496,10 @@ function rowToStoryLine(row: { message_id: number; role: string; message?: strin
     return null;
   }
   const { main, puppy } = parseAssistantStoryDisplay(raw);
-  const content = main || parseStoryDisplayText(raw);
+  let content = main || parseStoryDisplayText(raw);
+  if (!content) {
+    content = assistantRowFallbackDisplayText(raw);
+  }
   if (!content && !puppy) {
     return null;
   }
@@ -503,7 +521,15 @@ export function loadRecentStoryChatLines(): StoryChatLine[] {
     // 须含被酒馆标记为 hidden 的楼层，否则多轮对话后往往只剩最新一楼
     const rows = getChatMessages(`0-${lastId}`, { hide_state: 'all' });
     const slice = pickRowsForLastTwoAssistantRounds(rows);
-    return slice.map(row => rowToStoryLine(row)).filter((line): line is StoryChatLine => line !== null);
+    const lines = slice.map(row => rowToStoryLine(row)).filter((line): line is StoryChatLine => line !== null);
+    if (slice.length > 0 && lines.length < slice.length) {
+      console.warn('[messageParser] 部分楼层无可见正文已跳过', {
+        slice: slice.length,
+        shown: lines.length,
+        ids: slice.map(r => r.message_id),
+      });
+    }
+    return lines;
   } catch (e) {
     console.warn('[messageParser] loadRecentStoryChatLines:', e);
     return [];

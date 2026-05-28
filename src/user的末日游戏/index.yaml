@@ -288,8 +288,11 @@
         <script>
         (function () {
           var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';
-          $('#th-user-apocalypse-ui').load(u + 'index.html', function () {
-            $.getScript(u + 'index.js');
+          var v = '20260524-story';
+          $('#th-user-apocalypse-ui').load(u + 'index.html?' + v, function () {
+            $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true }).fail(function (_x, _s, err) {
+              console.error('[末日游戏] index.js 加载失败', err || _s);
+            });
           });
         })();
         </script>
