@@ -74,7 +74,9 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
         className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 pb-4 [-webkit-overflow-scrolling:touch] sm:space-y-6 sm:p-6 sm:pb-5"
       >
         <AnimatePresence initial={false}>
-          {messages.map(m => (
+          {messages.map(m => {
+            const floorLabel = m.id.match(/-(\d+)$/)?.[1];
+            return (
             <motion.div
               key={m.id}
               layout
@@ -99,6 +101,11 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                   m.role === 'assistant' ? 'chat-bubble-assistant' : 'chat-bubble-user'
                 }`}
               >
+                {floorLabel ? (
+                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-game-text-muted opacity-80">
+                    第 {floorLabel} 楼
+                  </div>
+                ) : null}
                 {m.content ? <p className="whitespace-pre-wrap">{m.content}</p> : null}
                 {m.role === 'assistant' && m.puppy ? (
                   <details className="puppy-theater mt-3 overflow-hidden rounded-lg open:shadow-sm">
@@ -112,7 +119,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                 ) : null}
               </div>
             </motion.div>
-          ))}
+          );
+          })}
         </AnimatePresence>
       </div>
 

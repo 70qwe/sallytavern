@@ -73,27 +73,23 @@ export default function App() {
     });
   }, [fullscreen]);
 
-  /** 优先展示最新 assistant 中 &lt;maintext&gt;，否则回退 MVU 界面对话；仅保留最近两回合 */
+  /** 剧情区：聊天记录最近两回合（见 loadRecentStoryChatLines）；无记录时回退单条 maintext / 界面对话 */
   const chatLines: ChatLine[] = useMemo(() => {
-    let lines: ChatLine[];
     if (storyLines.length > 0) {
-      lines = storyLines;
-    } else {
-      const t = maintext.trim();
-      if (t || latestPuppy) {
-        lines = [
-          {
-            id: `assistant-maintext-${sourceMessageId ?? 'current'}`,
-            role: 'assistant' as const,
-            content: t,
-            puppy: latestPuppy,
-          },
-        ];
-      } else {
-        lines = ui.chatLines;
-      }
+      return storyLines;
     }
-    return takeLastTwoStoryRounds(lines);
+    const t = maintext.trim();
+    if (t || latestPuppy) {
+      return [
+        {
+          id: `assistant-maintext-${sourceMessageId ?? 'current'}`,
+          role: 'assistant' as const,
+          content: t,
+          puppy: latestPuppy,
+        },
+      ];
+    }
+    return takeLastTwoStoryRounds(ui.chatLines);
   }, [maintext, sourceMessageId, latestPuppy, storyLines, ui.chatLines]);
 
   /** 行动选项仅来自主 API 消息内 &lt;option&gt;（变量表已不含「下一步行动」） */

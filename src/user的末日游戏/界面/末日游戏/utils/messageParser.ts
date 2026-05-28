@@ -444,6 +444,55 @@ export interface StoryChatLine {
   puppy?: PresetPuppyTheater;
 }
 
+/** 先按楼层切片再解析，避免「旧楼解析为空」导致剧情区只剩最新一条 */
+function pickRowsForLastTwoAssistantRounds(
+  rows: { message_id: number; role: string; message?: string }[],
+): { message_id: number; role: string; message?: string }[] {
+  const assistantIndices: number[] = [];
+  rows.forEach((row, index) => {
+    if (row.role === 'assistant') {
+      assistantIndices.push(index);
+    }
+  });
+  if (assistantIndices.length === 0) {
+    return [];
+  }
+
+  let startIndex: number;
+  if (assistantIndices.length >= 2) {
+    startIndex = assistantIndices[assistantIndices.length - 2]!;
+  } else {
+    startIndex = assistantIndices[0]!;
+    if (startIndex > 0 && rows[startIndex - 1]?.role === 'user') {
+      startIndex -= 1;
+    }
+  }
+
+  return rows.slice(startIndex);
+}
+
+function rowToStoryLine(row: { message_id: number; role: string; message?: string }): StoryChatLine | null {
+  const raw = row.message ?? '';
+  if (row.role === 'user') {
+    const content = raw.trim();
+    return content ? { id: `user-${row.message_id}`, role: 'user', content } : null;
+  }
+  if (row.role !== 'assistant') {
+    return null;
+  }
+  const { main, puppy } = parseAssistantStoryDisplay(raw);
+  const content = main || parseStoryDisplayText(raw);
+  if (!content && !puppy) {
+    return null;
+  }
+  return {
+    id: `assistant-${row.message_id}`,
+    role: 'assistant',
+    content,
+    puppy: puppy ?? undefined,
+  };
+}
+
 /** 从聊天记录构建剧情区气泡（含用户楼与 assistant 楼） */
 export function loadRecentStoryChatLines(): StoryChatLine[] {
   try {
@@ -451,30 +500,9 @@ export function loadRecentStoryChatLines(): StoryChatLine[] {
     if (lastId < 0) {
       return [];
     }
-    const rows = getChatMessages(`0-${lastId}`);
-    const lines: StoryChatLine[] = [];
-    for (const row of rows) {
-      const raw = row.message ?? '';
-      if (row.role === 'user') {
-        const content = raw.trim();
-        if (content) {
-          lines.push({ id: `user-${row.message_id}`, role: 'user', content });
-        }
-        continue;
-      }
-      if (row.role === 'assistant') {
-        const { main, puppy } = parseAssistantStoryDisplay(raw);
-        if (main || puppy) {
-          lines.push({
-            id: `assistant-${row.message_id}`,
-            role: 'assistant',
-            content: main,
-            puppy: puppy ?? undefined,
-          });
-        }
-      }
-    }
-    return takeLastTwoStoryRounds(lines);
+    const rows = getChatMessages(`0-${lastId}`, { hide_state: 'unhidden' });
+    const slice = pickRowsForLastTwoAssistantRounds(rows);
+    return slice.map(row => rowToStoryLine(row)).filter((line): line is StoryChatLine => line !== null);
   } catch (e) {
     console.warn('[messageParser] loadRecentStoryChatLines:', e);
     return [];
