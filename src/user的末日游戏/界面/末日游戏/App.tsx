@@ -22,6 +22,7 @@ import { SystemModals, type ModalId } from './components/SystemModals';
 import type { ChatLine } from './mvuMap';
 import { statToGameUi } from './mvuMap';
 import type { ActionOption } from './types';
+import { takeLastTwoStoryRounds } from './utils/messageParser';
 import { useAssistantStory } from './useAssistantStory';
 import { useMessageMvuData } from './useMessageMvuData';
 import { useUiFontStyle, useUiSettings } from './UiSettingsContext';
@@ -72,23 +73,27 @@ export default function App() {
     });
   }, [fullscreen]);
 
-  /** 优先展示最新 assistant 中 &lt;maintext&gt;，否则回退 MVU 界面对话 */
+  /** 优先展示最新 assistant 中 &lt;maintext&gt;，否则回退 MVU 界面对话；仅保留最近两回合 */
   const chatLines: ChatLine[] = useMemo(() => {
+    let lines: ChatLine[];
     if (storyLines.length > 0) {
-      return storyLines;
+      lines = storyLines;
+    } else {
+      const t = maintext.trim();
+      if (t || latestPuppy) {
+        lines = [
+          {
+            id: `assistant-maintext-${sourceMessageId ?? 'current'}`,
+            role: 'assistant' as const,
+            content: t,
+            puppy: latestPuppy,
+          },
+        ];
+      } else {
+        lines = ui.chatLines;
+      }
     }
-    const t = maintext.trim();
-    if (t || latestPuppy) {
-      return [
-        {
-          id: `assistant-maintext-${sourceMessageId ?? 'current'}`,
-          role: 'assistant' as const,
-          content: t,
-          puppy: latestPuppy,
-        },
-      ];
-    }
-    return ui.chatLines;
+    return takeLastTwoStoryRounds(lines);
   }, [maintext, sourceMessageId, latestPuppy, storyLines, ui.chatLines]);
 
   /** 行动选项仅来自主 API 消息内 &lt;option&gt;（变量表已不含「下一步行动」） */
@@ -189,8 +194,11 @@ export default function App() {
         </div>
       </div>
 
-      <nav className="safe-pb-nav dossier-dock shrink-0 overflow-x-auto overflow-y-hidden [-webkit-overflow-scrolling:touch]">
-        <div className="flex min-h-[52px] w-max min-w-full flex-nowrap justify-start gap-2 px-2 py-2 sm:justify-center sm:px-3 sm:py-3">
+      <nav
+        className="safe-pb-nav dossier-dock dossier-dock-scroll shrink-0"
+        aria-label="系统功能"
+      >
+        <div className="dossier-dock-track flex min-h-[52px] w-max min-w-full flex-nowrap justify-start gap-2 px-2 py-2 sm:px-3 sm:py-3">
           {DOCK.map(({ id, icon: Icon, label }) => (
             <button
               key={id}

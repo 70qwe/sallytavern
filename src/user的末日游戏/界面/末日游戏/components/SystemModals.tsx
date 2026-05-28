@@ -116,29 +116,42 @@ function titleFor(id: ModalId): string {
 
 function InventoryBody({ ui }: { ui: GameUi }) {
   const { inventory } = ui;
+  const itemCount = inventory.items.reduce((sum, it) => sum + it.count, 0);
   return (
     <div className="space-y-3">
-      <p className="text-xs text-gray-500">
-        <span className="title-underlay-sm text-gray-600">负重</span>{' '}
+      <p className="text-xs text-game-text-muted">
+        <span className="title-underlay-sm text-game-accent">负重</span>{' '}
         {inventory.currentWeight} / {inventory.maxWeight} 格
+        {inventory.items.length > 0 ? (
+          <>
+            {' '}
+            · 共 {inventory.items.length} 种 / {itemCount} 件
+          </>
+        ) : null}
       </p>
       {inventory.items.length === 0 ? (
-        <Empty hint="暂无物品" />
+        <Empty hint="暂无物品（获得物品后会显示名称与数量）" />
       ) : (
         <ul className="space-y-2">
           {inventory.items.map(it => (
             <li
               key={it.id}
-              className="dossier-card flex gap-3 justify-between items-start rounded-lg p-3"
+              className="dossier-card flex items-start justify-between gap-3 rounded-lg p-3"
             >
-              <div className="flex gap-2">
-                <Package className="w-4 h-4 shrink-0 mt-0.5 text-game-primary" />
-                <div>
-                  <div className="font-bold">{it.name}</div>
-                  <div className="text-xs text-gray-500 mt-1 whitespace-pre-wrap">{it.description}</div>
+              <div className="flex min-w-0 gap-2">
+                <Package className="mt-0.5 h-4 w-4 shrink-0 text-game-primary" />
+                <div className="min-w-0">
+                  <div className="font-bold text-game-text">{it.name}</div>
+                  {it.description.trim() ? (
+                    <div className="mt-1 whitespace-pre-wrap text-xs text-game-text-muted">
+                      {it.description}
+                    </div>
+                  ) : null}
                 </div>
               </div>
-              <span className="shrink-0 font-bold text-game-accent">×{it.count}</span>
+              <span className="shrink-0 rounded-md bg-game-paper/80 px-2 py-1 text-sm font-bold text-game-accent">
+                ×{it.count}
+              </span>
             </li>
           ))}
         </ul>
@@ -153,25 +166,30 @@ function HuntingBody({ ui }: { ui: GameUi }) {
     <div className="space-y-6">
       <section>
         <h3 className="font-heading mb-2 text-base">
-          <span className="title-underlay text-game-accent">进行中</span>
+          <span className="title-underlay text-game-accent">正在狩猎</span>
+          <span className="ml-2 text-xs font-normal text-game-text-muted">
+            ({huntingList.targets.length} 人)
+          </span>
         </h3>
         {huntingList.targets.length === 0 ? (
-          <Empty hint="名单为空" />
+          <Empty hint="暂无狩猎目标（标记猎物后会显示于此）" />
         ) : (
           <ul className="space-y-2">
             {huntingList.targets.map(t => (
-              <li key={t.uid} className="dossier-card rounded-lg p-3 space-y-1">
+              <li key={t.uid || `${t.name}-${t.nickname}`} className="dossier-card space-y-1 rounded-lg p-3">
                 <div className="flex justify-between gap-2">
-                  <span className="font-bold">
-                    {t.name}{' '}
-                    <span className="text-xs font-normal text-gray-500">({t.nickname})</span>
+                  <span className="font-bold text-game-text">
+                    {t.name || '未命名'}
+                    {t.nickname ? (
+                      <span className="text-xs font-normal text-game-text-muted"> ({t.nickname})</span>
+                    ) : null}
                   </span>
-                  <span className="text-xs text-gray-500">{t.location}</span>
+                  <span className="shrink-0 text-xs text-game-text-muted">{t.location || '—'}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-gray-600">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-game-text-muted">
                   <span>沦陷 {t.corruption}%</span>
                   <span className="text-right">预计 SP {t.estimatedSP}</span>
-                  <span className="col-span-2">状态：{t.status}</span>
+                  <span className="col-span-2">状态：{t.status || '—'}</span>
                 </div>
               </li>
             ))}
@@ -181,22 +199,27 @@ function HuntingBody({ ui }: { ui: GameUi }) {
       <section>
         <h3 className="font-heading mb-2 text-base">
           <span className="title-underlay text-game-accent">已奴役</span>
+          <span className="ml-2 text-xs font-normal text-game-text-muted">
+            ({huntingList.slaves.length} 人)
+          </span>
         </h3>
         {huntingList.slaves.length === 0 ? (
-          <Empty hint="暂无奴隶" />
+          <Empty hint="暂无已奴役角色（沦陷完成后会转入此列表）" />
         ) : (
           <ul className="space-y-2">
             {huntingList.slaves.map(s => (
-              <li key={s.uid} className="dossier-card rounded-lg p-3 space-y-1">
+              <li key={s.uid || `${s.name}-${s.nickname}`} className="dossier-card space-y-1 rounded-lg p-3">
                 <div className="flex justify-between gap-2">
-                  <span className="font-bold">
-                    {s.name}{' '}
-                    <span className="text-xs font-normal text-gray-500">({s.nickname})</span>
+                  <span className="font-bold text-game-text">
+                    {s.name || '未命名'}
+                    {s.nickname ? (
+                      <span className="text-xs font-normal text-game-text-muted"> ({s.nickname})</span>
+                    ) : null}
                   </span>
-                  <span className="text-xs text-gray-500">{s.location}</span>
+                  <span className="shrink-0 text-xs text-game-text-muted">{s.location || '—'}</span>
                 </div>
-                <p className="text-xs text-gray-600">用途：{s.purpose}</p>
-                <p className="text-xs text-gray-500">预计 SP {s.estimatedSP}</p>
+                <p className="text-xs text-game-text-muted">用途：{s.purpose || '—'}</p>
+                <p className="text-xs text-game-text-muted">预计 SP {s.estimatedSP}</p>
               </li>
             ))}
           </ul>

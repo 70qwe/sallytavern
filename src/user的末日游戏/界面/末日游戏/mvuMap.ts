@@ -90,22 +90,35 @@ export function statToPlayerInfo(s: StatData): PlayerInfo {
 }
 
 export function statToInventory(s: StatData): Inventory {
+  const items = Object.entries(s.物品栏)
+    .map(([id, i]) => {
+      const name = (i.名称?.trim() || id).trim();
+      const count = i.数量 ?? 0;
+      if (!name || count <= 0) {
+        return null;
+      }
+      return {
+        id,
+        name,
+        description: i.描述 ?? '',
+        count,
+      };
+    })
+    .filter((it): it is NonNullable<typeof it> => it !== null)
+    .sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+
   return {
     currentWeight: s.背包.已用格子,
     maxWeight: s.背包.格子上限,
-    items: Object.entries(s.物品栏).map(([id, i]) => ({
-      id,
-      name: i.名称,
-      description: i.描述,
-      count: i.数量,
-    })),
+    items,
   };
 }
 
 export function statToHuntingList(s: StatData): HuntingList {
-  const targets = Object.values(s.狩猎名单.进行中).map(t => ({
+  const targets = Object.entries(s.狩猎名单.进行中)
+    .map(([id, t]) => ({
     name: t.姓名,
-    uid: t.uid,
+    uid: t.uid || id,
     nickname: t.昵称,
     race: t.种族,
     identity: t.身份,
@@ -119,11 +132,13 @@ export function statToHuntingList(s: StatData): HuntingList {
     location: t.当前位置,
     status: t.当前状态,
     estimatedSP: t.预计产出SP,
-  }));
+  }))
+    .filter(t => t.name.trim() || t.uid || t.nickname.trim());
 
-  const slaves = Object.values(s.狩猎名单.已奴隶).map(t => ({
+  const slaves = Object.entries(s.狩猎名单.已奴隶)
+    .map(([id, t]) => ({
     name: t.姓名,
-    uid: t.uid,
+    uid: t.uid || id,
     nickname: t.昵称,
     race: t.种族,
     identity: t.身份,
@@ -137,7 +152,8 @@ export function statToHuntingList(s: StatData): HuntingList {
     status: '奴隶',
     purpose: t.当前状态或用途,
     estimatedSP: t.预计产出SP,
-  }));
+  }))
+    .filter(s => s.name.trim() || s.uid || s.nickname.trim());
 
   return { targets, slaves };
 }

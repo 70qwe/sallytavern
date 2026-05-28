@@ -243,10 +243,32 @@ body {
 
 .dossier-dock {
   position: relative;
-  overflow: hidden;
   background: linear-gradient(180deg, rgba(47, 40, 34, 0.95) 0%, rgba(35, 30, 26, 0.98) 100%);
   border-top: 2px solid var(--color-game-border);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dossier-dock-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 146, 114, 0.65) rgba(35, 30, 26, 0.4);
+}
+
+.dossier-dock-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dossier-dock-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(168, 146, 114, 0.75);
+}
+
+.dossier-dock-track {
+  scroll-snap-type: x proximity;
 }
 
 .dossier-dock::before {

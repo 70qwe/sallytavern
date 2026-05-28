@@ -474,11 +474,41 @@ export function loadRecentStoryChatLines(): StoryChatLine[] {
         }
       }
     }
-    return lines;
+    return takeLastTwoStoryRounds(lines);
   } catch (e) {
     console.warn('[messageParser] loadRecentStoryChatLines:', e);
     return [];
   }
+}
+
+/**
+ * 剧情区仅保留「最近两回合」：从末尾起包含最近 2 条 assistant，及其间的 user。
+ * 例：第 4 楼为 assistant 时展示第 2、3、4 楼（3 为用户发言）。
+ */
+export function takeLastTwoStoryRounds(lines: StoryChatLine[]): StoryChatLine[] {
+  if (lines.length <= 1) {
+    return lines;
+  }
+
+  let assistantCount = 0;
+  const picked: StoryChatLine[] = [];
+
+  for (let i = lines.length - 1; i >= 0; i--) {
+    picked.unshift(lines[i]);
+    if (lines[i].role === 'assistant') {
+      assistantCount += 1;
+      if (assistantCount >= 2) {
+        break;
+      }
+    }
+  }
+
+  const start = lines.length - picked.length;
+  if (start > 0 && lines[start - 1].role === 'user' && picked[0]?.role === 'assistant') {
+    picked.unshift(lines[start - 1]);
+  }
+
+  return picked;
 }
 
 /**
