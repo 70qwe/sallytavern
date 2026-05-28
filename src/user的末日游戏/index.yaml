@@ -278,25 +278,23 @@
         仅格式显示: true
         仅格式提示词: false
 
+    # 整段 AI 楼层替换为界面（$body.load）；跨域时须回调里单独拉 index.js，勿用 type=module
     - 正则名称: '[界面]前端界面末日游戏'
       id: f6ec3d54-821f-817f-fdc1-5544111111ee
       启用: true
-      查找表达式: <StatusPlaceHolderImpl/>
+      查找表达式: /.+/s
       内容: |-
-        ```
-        <div id="th-user-apocalypse-ui" style="width:100%;box-sizing:border-box;min-height:max(560px,min(88dvh,960px));"></div>
         <script>
         (function () {
           var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';
-          var v = '20260524-story';
-          $('#th-user-apocalypse-ui').load(u + 'index.html?' + v, function () {
+          var v = '20260525';
+          $('body').load(u + 'index.html?' + v, function () {
             $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true }).fail(function (_x, _s, err) {
               console.error('[末日游戏] index.js 加载失败', err || _s);
             });
           });
         })();
         </script>
-        ```
       来源:
         用户输入: false
         AI输出: true
@@ -319,26 +317,26 @@
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/脚本/变量结构/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/变量结构/index.js';
 
       - 名称: 立即事件
         id: c13f92a3-4de6-6a0f-d423-223344556677
         启用: false
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/脚本/立即事件/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/立即事件/index.js';
 
       - 名称: 游戏历史
         id: e35fa4c5-6bf8-8c2d-f645-445566778899
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/脚本/游戏历史/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/游戏历史/index.js';
 
       - 名称: 多API串联
         id: f46fb5d6-7cf9-9d3e-a756-556677889900
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern/dist/user的末日游戏/脚本/多API串联/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/多API串联/index.js';
 
