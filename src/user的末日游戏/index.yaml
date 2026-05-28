@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://testingcf.jsdelivr.net/gh/StageDog/tavern_sync/dist/schema/character.zh.json
+# yaml-language-server: $schema=./character.zh.schema.json
 头像: null
 版本: 1.0.0
 作者: ''
