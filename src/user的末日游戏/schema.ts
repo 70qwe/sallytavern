@@ -86,17 +86,6 @@ export const Schema = z
         角色总评评语: z.string().prefault(''),
       })
       .prefault({}),
-    任务列表: z
-      .record(
-        z.string(),
-        z.object({
-          标题: z.string().prefault(''),
-          描述: z.string().prefault(''),
-          奖励: z.string().prefault(''),
-          进度: z.coerce.number().transform(v => _.clamp(v, 0, 100)).prefault(0),
-        }),
-      )
-      .prefault({}),
     背包: z
       .object({
         已用格子: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).prefault(0),

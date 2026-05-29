@@ -36,12 +36,6 @@ export interface PlayerInfo {
   ratingComment: string;
 }
 
-export interface Quest {
-  id: string;
-  name: string;
-  reward: string;
-}
-
 export interface Item {
   id: string;
   name: string;

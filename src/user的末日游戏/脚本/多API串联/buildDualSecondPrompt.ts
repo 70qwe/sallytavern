@@ -28,7 +28,7 @@ export function findFirstMatchingEntryContent(
 }
 
 /**
- * 从 stat_data 中拆出「世界大势 / 论坛 / 排行 / 交易 / 任务 / 副本」等，供第二路参考
+ * 从 stat_data 中拆出「世界大势 / 论坛 / 排行 / 交易 / 副本」等，供第二路参考
  */
 export function formatAuxiliaryStatContext(stat: unknown): string {
   if (!stat || typeof stat !== 'object') {
@@ -38,9 +38,6 @@ export function formatAuxiliaryStatContext(stat: unknown): string {
   const parts: string[] = [];
   if (s.世界) {
     parts.push('【世界 / 日期天气地点等】\n' + JSON.stringify(s.世界, null, 2));
-  }
-  if (s.任务列表 && Object.keys(s.任务列表 as object).length) {
-    parts.push('【任务列表】\n' + JSON.stringify(s.任务列表, null, 2));
   }
   if (s.玩家论坛) {
     parts.push('【玩家论坛 / 私信】\n' + JSON.stringify(s.玩家论坛, null, 2));

@@ -138,34 +138,6 @@
         }
       }
     },
-    "任务列表": {
-      "default": {},
-      "type": "object",
-      "propertyNames": {
-        "type": "string"
-      },
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "标题": {
-            "default": "",
-            "type": "string"
-          },
-          "描述": {
-            "default": "",
-            "type": "string"
-          },
-          "奖励": {
-            "default": "",
-            "type": "string"
-          },
-          "进度": {
-            "default": 0,
-            "type": "number"
-          }
-        }
-      }
-    },
     "背包": {
       "default": {},
       "type": "object",

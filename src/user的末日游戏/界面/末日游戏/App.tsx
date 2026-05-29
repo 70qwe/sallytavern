@@ -8,7 +8,6 @@ import {
   Crosshair,
   MessageSquare,
   MessagesSquare,
-  ScrollText,
   Store,
   Trophy,
 } from 'lucide-react';
@@ -30,7 +29,6 @@ import { applyWorldbookOutputMode } from './worldbookOutputMode';
 const DOCK: { id: ModalId; icon: typeof Backpack; label: string }[] = [
   { id: 'inventory', icon: Backpack, label: '背包' },
   { id: 'hunting', icon: Crosshair, label: '狩猎' },
-  { id: 'quests', icon: ScrollText, label: '任务' },
   { id: 'forum', icon: MessagesSquare, label: '论坛' },
   { id: 'trade', icon: Store, label: '交易' },
   { id: 'dungeons', icon: Castle, label: '副本' },

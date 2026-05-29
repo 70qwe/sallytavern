@@ -3,7 +3,7 @@ import type {
     Dungeon,
     ForumPost, HuntingList, Inventory, LeaderboardEntry, PlayerInfo, PlayerTradeItem,
     PrivateMessage,
-    Quest, Rating, SeasonInfo,
+    Rating, SeasonInfo,
     ShopItem,
     WorldInfo
 } from './types';
@@ -158,14 +158,6 @@ export function statToHuntingList(s: StatData): HuntingList {
   return { targets, slaves };
 }
 
-export function statToQuests(s: StatData): Quest[] {
-  return Object.entries(s.任务列表).map(([id, q]) => ({
-    id,
-    name: q.标题,
-    reward: q.奖励,
-  }));
-}
-
 function deriveForumTitle(content: string): string {
   const line = content
     .trim()
@@ -287,7 +279,6 @@ export function statToGameUi(s: StatData) {
     player: statToPlayerInfo(s),
     inventory: statToInventory(s),
     huntingList: statToHuntingList(s),
-    quests: statToQuests(s),
     forumPosts: statToForumPosts(s),
     privateMessages: statToPrivateMessages(s),
     shopItems: statToShopItems(s),

@@ -6,7 +6,6 @@ import {
   ChevronRight,
   MessageSquare,
   Package,
-  ScrollText,
   Store,
   Trophy,
   Users,
@@ -20,7 +19,6 @@ import type { GameUi } from '../mvuMap';
 export type ModalId =
   | 'inventory'
   | 'hunting'
-  | 'quests'
   | 'forum'
   | 'trade'
   | 'dungeons'
@@ -61,7 +59,6 @@ export const SystemModals: React.FC<SystemModalsProps> = ({ active, onClose, ui 
               <div className="dossier-modal-title flex min-w-0 items-center gap-2.5 font-heading text-xl text-white sm:text-2xl">
                 {active === 'inventory' && <Backpack className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
                 {active === 'hunting' && <Users className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
-                {active === 'quests' && <ScrollText className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
                 {active === 'forum' && <MessageSquare className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
                 {active === 'trade' && <Store className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
                 {active === 'dungeons' && <Castle className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" aria-hidden />}
@@ -82,7 +79,6 @@ export const SystemModals: React.FC<SystemModalsProps> = ({ active, onClose, ui 
             <div className="safe-pb-nav min-h-0 flex-1 overflow-y-auto p-3 text-sm [-webkit-overflow-scrolling:touch] sm:p-4">
               {active === 'inventory' && <InventoryBody ui={ui} />}
               {active === 'hunting' && <HuntingBody ui={ui} />}
-              {active === 'quests' && <QuestsBody ui={ui} />}
               {active === 'forum' && (
                 <ForumBody ui={ui} tab={forumTab} setTab={setForumTab} />
               )}
@@ -104,7 +100,6 @@ function titleFor(id: ModalId): string {
   const m: Record<ModalId, string> = {
     inventory: '背包',
     hunting: '狩猎名单',
-    quests: '任务',
     forum: '玩家论坛',
     trade: '交易行',
     dungeons: '副本',
@@ -226,23 +221,6 @@ function HuntingBody({ ui }: { ui: GameUi }) {
         )}
       </section>
     </div>
-  );
-}
-
-function QuestsBody({ ui }: { ui: GameUi }) {
-  const { quests } = ui;
-  if (quests.length === 0) {
-    return <Empty hint="暂无任务" />;
-  }
-  return (
-    <ul className="space-y-2">
-      {quests.map(q => (
-        <li key={q.id} className="dossier-card rounded-lg p-3">
-          <div className="font-bold">{q.name}</div>
-          <div className="text-xs text-game-primary mt-1">奖励：{q.reward}</div>
-        </li>
-      ))}
-    </ul>
   );
 }
 
