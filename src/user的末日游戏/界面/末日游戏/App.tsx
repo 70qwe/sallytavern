@@ -22,7 +22,6 @@ import { SystemModals, type ModalId } from './components/SystemModals';
 import type { ChatLine } from './mvuMap';
 import { statToGameUi } from './mvuMap';
 import type { ActionOption } from './types';
-import { takeLastTwoStoryRounds } from './utils/messageParser';
 import { useAssistantStory } from './useAssistantStory';
 import { useMessageMvuData } from './useMessageMvuData';
 import { useUiFontStyle, useUiSettings } from './UiSettingsContext';
@@ -73,10 +72,11 @@ export default function App() {
     });
   }, [fullscreen]);
 
-  /** 剧情区：聊天记录最近两回合（见 loadRecentStoryChatLines）；无记录时回退单条 maintext / 界面对话 */
+  /** 剧情区：仅最新一条 AI 主叙事（无用户楼、无气泡） */
   const chatLines: ChatLine[] = useMemo(() => {
-    if (storyLines.length > 0) {
-      return storyLines;
+    const fromStory = storyLines.filter(l => l.role === 'assistant').slice(-1);
+    if (fromStory.length > 0) {
+      return fromStory;
     }
     const t = maintext.trim();
     if (t || latestPuppy) {
@@ -89,8 +89,8 @@ export default function App() {
         },
       ];
     }
-    return takeLastTwoStoryRounds(ui.chatLines);
-  }, [maintext, sourceMessageId, latestPuppy, storyLines, ui.chatLines]);
+    return [];
+  }, [maintext, sourceMessageId, latestPuppy, storyLines]);
 
   /** 行动选项仅来自主 API 消息内 &lt;option&gt;（变量表已不含「下一步行动」） */
   const actionButtons: ActionOption[] = useMemo(() => actionsFromParse, [actionsFromParse]);

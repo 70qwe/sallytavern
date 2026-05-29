@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Loader2, Send, Sparkles, User } from 'lucide-react';
+import { ChevronDown, Loader2, Send } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useChatSend } from '../hooks/useChatSend';
 import type { ChatLine } from '../mvuMap';
@@ -74,41 +74,23 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
         className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 pb-4 [-webkit-overflow-scrolling:touch] sm:space-y-6 sm:p-6 sm:pb-5"
       >
         <AnimatePresence initial={false}>
-          {messages.map(m => {
-            const floorLabel = m.id.match(/-(\d+)$/)?.[1];
-            return (
-            <motion.div
-              key={m.id}
-              layout
-              initial={{ opacity: 0, y: 14, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className={`flex gap-2 sm:gap-4 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}
-            >
-              <div
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-sm sm:h-10 sm:w-10 ${
-                  m.role === 'assistant' ? 'chat-avatar-assistant' : 'chat-avatar-user'
-                }`}
+          {messages
+            .filter(m => m.role === 'assistant')
+            .slice(-1)
+            .map(m => (
+              <motion.article
+                key={m.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                className="max-w-none text-sm leading-relaxed text-game-text sm:text-base"
               >
-                {m.role === 'assistant' ? (
-                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-                ) : (
-                  <User className="h-4 w-4 sm:h-5 sm:w-5" />
-                )}
-              </div>
-              <div
-                className={`max-w-[min(92%,22rem)] rounded-xl p-3 leading-relaxed sm:max-w-[85%] sm:p-4 ${
-                  m.role === 'assistant' ? 'chat-bubble-assistant' : 'chat-bubble-user'
-                }`}
-              >
-                {floorLabel ? (
-                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-game-text-muted opacity-80">
-                    第 {floorLabel} 楼
-                  </div>
+                {m.content ? (
+                  <p className="whitespace-pre-wrap">{m.content}</p>
                 ) : null}
-                {m.content ? <p className="whitespace-pre-wrap">{m.content}</p> : null}
-                {m.role === 'assistant' && m.puppy ? (
-                  <details className="puppy-theater mt-3 overflow-hidden rounded-lg open:shadow-sm">
+                {m.puppy ? (
+                  <details className="puppy-theater mt-4 overflow-hidden rounded-lg open:shadow-sm">
                     <summary className="cursor-pointer select-none px-3 py-2 text-xs font-bold text-amber-900/90 marker:content-none list-none [&::-webkit-details-marker]:hidden">
                       <span className="title-underlay-sm">{m.puppy.title}</span>
                     </summary>
@@ -117,10 +99,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                     </div>
                   </details>
                 ) : null}
-              </div>
-            </motion.div>
-          );
-          })}
+              </motion.article>
+            ))}
         </AnimatePresence>
       </div>
 

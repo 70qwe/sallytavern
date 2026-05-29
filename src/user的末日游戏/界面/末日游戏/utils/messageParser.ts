@@ -444,38 +444,24 @@ export interface StoryChatLine {
   puppy?: PresetPuppyTheater;
 }
 
-/** 先按楼层切片再解析，避免「旧楼解析为空」导致剧情区只剩最新一条 */
-function pickRowsForLastTwoAssistantRounds(
-  rows: { message_id: number; role: string; message?: string }[],
-): { message_id: number; role: string; message?: string }[] {
-  const assistantIndices: number[] = [];
-  rows.forEach((row, index) => {
-    if (row.role === 'assistant') {
-      assistantIndices.push(index);
+/** 剧情区：仅最新一条 assistant 的主叙事（不含用户楼） */
+export function loadRecentStoryChatLines(): StoryChatLine[] {
+  try {
+    const lastId = getLastMessageId();
+    if (lastId < 0) {
+      return [];
     }
-  });
-  if (assistantIndices.length === 0) {
+    const assistants = getChatMessages(`0-${lastId}`, { role: 'assistant', hide_state: 'all' });
+    if (!assistants.length) {
+      return [];
+    }
+    const latest = assistants[assistants.length - 1];
+    const line = rowToStoryLine(latest);
+    return line ? [line] : [];
+  } catch (e) {
+    console.warn('[messageParser] loadRecentStoryChatLines:', e);
     return [];
   }
-
-  let startIndex: number;
-  if (assistantIndices.length >= 2) {
-    startIndex = assistantIndices[assistantIndices.length - 2]!;
-    if (
-      startIndex > 0 &&
-      rows[startIndex - 1]?.role === 'user' &&
-      rows[startIndex - 2]?.role === 'assistant'
-    ) {
-      startIndex -= 1;
-    }
-  } else {
-    startIndex = assistantIndices[0]!;
-    if (startIndex > 0 && rows[startIndex - 1]?.role === 'user') {
-      startIndex -= 1;
-    }
-  }
-
-  return rows.slice(startIndex);
 }
 
 function assistantRowFallbackDisplayText(raw: string): string {
@@ -509,61 +495,6 @@ function rowToStoryLine(row: { message_id: number; role: string; message?: strin
     content,
     puppy: puppy ?? undefined,
   };
-}
-
-/** 从聊天记录构建剧情区气泡（含用户楼与 assistant 楼） */
-export function loadRecentStoryChatLines(): StoryChatLine[] {
-  try {
-    const lastId = getLastMessageId();
-    if (lastId < 0) {
-      return [];
-    }
-    // 须含被酒馆标记为 hidden 的楼层，否则多轮对话后往往只剩最新一楼
-    const rows = getChatMessages(`0-${lastId}`, { hide_state: 'all' });
-    const slice = pickRowsForLastTwoAssistantRounds(rows);
-    const lines = slice.map(row => rowToStoryLine(row)).filter((line): line is StoryChatLine => line !== null);
-    if (slice.length > 0 && lines.length < slice.length) {
-      console.warn('[messageParser] 部分楼层无可见正文已跳过', {
-        slice: slice.length,
-        shown: lines.length,
-        ids: slice.map(r => r.message_id),
-      });
-    }
-    return lines;
-  } catch (e) {
-    console.warn('[messageParser] loadRecentStoryChatLines:', e);
-    return [];
-  }
-}
-
-/**
- * 剧情区仅保留「最近两回合」：从末尾起包含最近 2 条 assistant，及其间的 user。
- * 例：第 4 楼为 assistant 时展示第 2、3、4 楼（3 为用户发言）。
- */
-export function takeLastTwoStoryRounds(lines: StoryChatLine[]): StoryChatLine[] {
-  if (lines.length <= 1) {
-    return lines;
-  }
-
-  let assistantCount = 0;
-  const picked: StoryChatLine[] = [];
-
-  for (let i = lines.length - 1; i >= 0; i--) {
-    picked.unshift(lines[i]);
-    if (lines[i].role === 'assistant') {
-      assistantCount += 1;
-      if (assistantCount >= 2) {
-        break;
-      }
-    }
-  }
-
-  const start = lines.length - picked.length;
-  if (start > 0 && lines[start - 1].role === 'user' && picked[0]?.role === 'assistant') {
-    picked.unshift(lines[start - 1]);
-  }
-
-  return picked;
 }
 
 /**
