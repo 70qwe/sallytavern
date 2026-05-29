@@ -1,5 +1,5 @@
 # 成品说明：本文件为 initvar 快照；日常维护请优先编辑上级目录 `initvar.yaml`。
-# yaml-language-server: $schema=../../schema.json
+# yaml-language-server: $schema=../../../schema.json
 # 在编写 initvar 之前, 请先保证终端有在运行 `pnpm watch`, 这会生成 schema.json 用于检验 initvar 是否有效
 #
 # UID 约定：取 {{user}} 姓名拼音首字母大写（或汉字取首字缩写规则由玩家自定）+「-00010086」。占位「X」表示待替换。

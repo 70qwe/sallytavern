@@ -117,42 +117,42 @@ export function statToInventory(s: StatData): Inventory {
 export function statToHuntingList(s: StatData): HuntingList {
   const targets = Object.entries(s.狩猎名单.进行中)
     .map(([id, t]) => ({
-    name: t.姓名,
-    uid: t.uid || id,
-    nickname: t.昵称,
-    race: t.种族,
-    identity: t.身份,
-    age: t.年龄,
-    semenQuality: t.精液质量,
-    talent: t.天赋,
-    strength: { current: t.力量.当前, max: t.力量.上限 },
-    constitution: { current: t.体质.当前, max: t.体质.上限 },
-    agility: { current: t.敏捷.当前, max: t.敏捷.上限 },
-    corruption: t.沦陷度,
-    location: t.当前位置,
-    status: t.当前状态,
-    estimatedSP: t.预计产出SP,
-  }))
+      name: t.姓名,
+      uid: t.uid || id,
+      nickname: t.昵称,
+      race: t.种族,
+      identity: t.身份,
+      age: t.年龄,
+      semenQuality: t.精液质量,
+      talent: t.天赋,
+      strength: { current: t.力量.当前, max: t.力量.上限 },
+      constitution: { current: t.体质.当前, max: t.体质.上限 },
+      agility: { current: t.敏捷.当前, max: t.敏捷.上限 },
+      corruption: t.沦陷度,
+      location: t.当前位置,
+      status: t.当前状态,
+      estimatedSP: t.预计产出SP,
+    }))
     .filter(t => t.name.trim() || t.uid || t.nickname.trim());
 
   const slaves = Object.entries(s.狩猎名单.已奴隶)
     .map(([id, t]) => ({
-    name: t.姓名,
-    uid: t.uid || id,
-    nickname: t.昵称,
-    race: t.种族,
-    identity: t.身份,
-    age: t.年龄,
-    semenQuality: t.精液质量,
-    talent: t.天赋,
-    strength: { current: t.力量.当前, max: t.力量.上限 },
-    constitution: { current: t.体质.当前, max: t.体质.上限 },
-    agility: { current: t.敏捷.当前, max: t.敏捷.上限 },
-    location: t.当前位置,
-    status: '奴隶',
-    purpose: t.当前状态或用途,
-    estimatedSP: t.预计产出SP,
-  }))
+      name: t.姓名,
+      uid: t.uid || id,
+      nickname: t.昵称,
+      race: t.种族,
+      identity: t.身份,
+      age: t.年龄,
+      semenQuality: t.精液质量,
+      talent: t.天赋,
+      strength: { current: t.力量.当前, max: t.力量.上限 },
+      constitution: { current: t.体质.当前, max: t.体质.上限 },
+      agility: { current: t.敏捷.当前, max: t.敏捷.上限 },
+      location: t.当前位置,
+      status: t.当前状态或用途,
+      purpose: t.当前状态或用途,
+      estimatedSP: t.预计产出SP,
+    }))
     .filter(s => s.name.trim() || s.uid || s.nickname.trim());
 
   return { targets, slaves };

@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageSquare,
-  Package,
   Store,
   Trophy,
   Users,
@@ -127,31 +126,28 @@ function InventoryBody({ ui }: { ui: GameUi }) {
       {inventory.items.length === 0 ? (
         <Empty hint="暂无物品（获得物品后会显示名称与数量）" />
       ) : (
-        <ul className="space-y-2">
-          {inventory.items.map(it => (
-            <li
-              key={it.id}
-              className="dossier-card flex items-start justify-between gap-3 rounded-lg p-3"
-            >
-              <div className="flex min-w-0 gap-2">
-                <Package className="mt-0.5 h-4 w-4 shrink-0 text-game-primary" />
-                <div className="min-w-0">
-                  <div className="font-bold text-game-text">{it.name}</div>
-                  {it.description.trim() ? (
-                    <div className="mt-1 whitespace-pre-wrap text-xs text-game-text-muted">
-                      {it.description}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-              <span className="shrink-0 rounded-md bg-game-paper/80 px-2 py-1 text-sm font-bold text-game-accent">
-                ×{it.count}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <InventoryGrid items={inventory.items} />
       )}
     </div>
+  );
+}
+
+function HuntMetaLine({
+  race,
+  talent,
+  semenQuality,
+  estimatedSP,
+}: {
+  race: string;
+  talent: string;
+  semenQuality: string;
+  estimatedSP: number;
+}) {
+  return (
+    <p className="text-xs text-game-text-muted">
+      种族 {race.trim() || '—'} · 天赋 {talent.trim() || '—'} · 精液质量 {semenQuality} · 预计 SP{' '}
+      {estimatedSP}
+    </p>
   );
 }
 
@@ -183,9 +179,14 @@ function HuntingBody({ ui }: { ui: GameUi }) {
                 </div>
                 <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs text-game-text-muted">
                   <span>沦陷 {t.corruption}%</span>
-                  <span className="text-right">预计 SP {t.estimatedSP}</span>
-                  <span className="col-span-2">状态：{t.status || '—'}</span>
+                  <span className="text-right">状态：{t.status || '—'}</span>
                 </div>
+                <HuntMetaLine
+                  race={t.race}
+                  talent={t.talent}
+                  semenQuality={t.semenQuality}
+                  estimatedSP={t.estimatedSP}
+                />
               </li>
             ))}
           </ul>
@@ -193,13 +194,13 @@ function HuntingBody({ ui }: { ui: GameUi }) {
       </section>
       <section>
         <h3 className="font-heading mb-2 text-base">
-          <span className="title-underlay text-game-accent">已奴役</span>
+          <span className="title-underlay text-game-accent">已调教</span>
           <span className="ml-2 text-xs font-normal text-game-text-muted">
             ({huntingList.slaves.length} 人)
           </span>
         </h3>
         {huntingList.slaves.length === 0 ? (
-          <Empty hint="暂无已奴役角色（沦陷完成后会转入此列表）" />
+          <Empty hint="暂无已调教角色（沦陷完成后会转入此列表）" />
         ) : (
           <ul className="space-y-2">
             {huntingList.slaves.map(s => (
@@ -214,7 +215,12 @@ function HuntingBody({ ui }: { ui: GameUi }) {
                   <span className="shrink-0 text-xs text-game-text-muted">{s.location || '—'}</span>
                 </div>
                 <p className="text-xs text-game-text-muted">用途：{s.purpose || '—'}</p>
-                <p className="text-xs text-game-text-muted">预计 SP {s.estimatedSP}</p>
+                <HuntMetaLine
+                  race={s.race}
+                  talent={s.talent}
+                  semenQuality={s.semenQuality}
+                  estimatedSP={s.estimatedSP}
+                />
               </li>
             ))}
           </ul>
@@ -470,6 +476,26 @@ function SeasonBody({ ui }: { ui: GameUi }) {
 }
 
 const SHOP_GRID_SLOTS = 10;
+
+function InventoryGrid({ items }: { items: GameUi['inventory']['items'] }) {
+  return (
+    <div className="grid grid-cols-5 gap-2 sm:gap-2.5">
+      {items.map(it => (
+        <div key={it.id} className="flex min-w-0 flex-col items-stretch">
+          <div
+            className="polaroid-slot flex aspect-square min-h-[3.75rem] flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-[4.25rem]"
+            title={it.description.trim() || it.name}
+          >
+            <span className="line-clamp-3 text-[11px] font-bold leading-snug text-game-text sm:text-xs">
+              {it.name}
+            </span>
+          </div>
+          <p className="polaroid-price mt-1.5 text-center text-xs sm:text-sm">×{it.count}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function ShopGrid({ items, playerSp }: { items: GameUi['shopItems']; playerSp: number }) {
   const slots = items.slice(0, SHOP_GRID_SLOTS);
