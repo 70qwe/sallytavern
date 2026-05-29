@@ -219,21 +219,23 @@ const StatBar = ({
   color,
 }: {
   label: string;
-  val: { current: number; max: number };
+  val: { current: number | null; max: number };
   color: string;
 }) => (
   <div>
     <div className="mb-1 flex justify-between text-[10px] text-gray-400">
       <span className="title-underlay-sm text-gray-500">{label}</span>
       <span>
-        {val.current}/{val.max}
+        {val.current ?? '—'}/{val.max}
       </span>
     </div>
     <div className="h-1.5 overflow-hidden rounded-full bg-game-border/30">
       <motion.div
         className={`h-full ${color}`}
         initial={{ width: 0 }}
-        animate={{ width: `${Math.min(100, (val.current / Math.max(val.max, 1)) * 100)}%` }}
+        animate={{
+          width: `${val.current == null ? 0 : Math.min(100, (val.current / Math.max(val.max, 1)) * 100)}%`,
+        }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       />
     </div>

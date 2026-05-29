@@ -29,9 +29,9 @@ export interface PlayerInfo {
   sp: number;
   pollution: number;
   fullness: number;
-  strength: { current: number; max: number };
-  constitution: { current: number; max: number };
-  agility: { current: number; max: number };
+  strength: { current: number | null; max: number };
+  constitution: { current: number | null; max: number };
+  agility: { current: number | null; max: number };
   rating: Rating;
   ratingComment: string;
 }

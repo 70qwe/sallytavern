@@ -7,6 +7,14 @@ const StatPair = z
   })
   .prefault({});
 
+/** 主角三维：initvar 不写死「当前」，仅保留上限基准，首次开局盘点时由 Patch 写入 */
+const PlayerStatPair = z
+  .object({
+    当前: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).optional(),
+    上限: z.coerce.number().transform(v => _.clamp(v, 1, 9999)).prefault(100),
+  })
+  .prefault({ 上限: 100 });
+
 const HuntActiveEntry = z
   .object({
     姓名: z.string().prefault(''),
@@ -79,9 +87,9 @@ export const Schema = z
         sp: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
         污染值: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(0),
         饱食度: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(100),
-        力量: StatPair,
-        体质: StatPair,
-        敏捷: StatPair,
+        力量: PlayerStatPair,
+        体质: PlayerStatPair,
+        敏捷: PlayerStatPair,
         角色总评: Rarity.prefault('E'),
         角色总评评语: z.string().prefault(''),
       })

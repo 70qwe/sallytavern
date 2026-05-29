@@ -81,9 +81,9 @@ export function statToPlayerInfo(s: StatData): PlayerInfo {
     sp: p.sp,
     pollution: p.污染值,
     fullness: p.饱食度,
-    strength: { current: p.力量.当前, max: p.力量.上限 },
-    constitution: { current: p.体质.当前, max: p.体质.上限 },
-    agility: { current: p.敏捷.当前, max: p.敏捷.上限 },
+    strength: { current: p.力量.当前 ?? null, max: p.力量.上限 },
+    constitution: { current: p.体质.当前 ?? null, max: p.体质.上限 },
+    agility: { current: p.敏捷.当前 ?? null, max: p.敏捷.上限 },
     rating: p.角色总评,
     ratingComment: p.角色总评评语,
   };
