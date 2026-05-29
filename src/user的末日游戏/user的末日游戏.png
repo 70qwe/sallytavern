@@ -91,7 +91,7 @@
           "disabled": false,
           "runOnEdit": false,
           "findRegex": "/.+/s",
-          "replaceString": "<script>\n(function () {\n  var $ = window.parent && window.parent.jQuery;\n  if (!$) {\n    console.error('[末日游戏] 找不到 jQuery');\n    return;\n  }\n  var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';\n  var v = '20260525b';\n  $(document.body).load(u + 'index.html?' + v, function () {\n    $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true })\n      .done(function () { console.info('[末日游戏] index.js 已加载'); })\n      .fail(function (_x, _s, err) {\n        console.error('[末日游戏] index.js 加载失败', err || _s);\n      });\n  });\n})();\n</script>",
+          "replaceString": "<body>\n<script>\n(function () {\n  var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';\n  $('body').load(u + 'index.html', function () {\n    $.getScript(u + 'index.js');\n  });\n})();\n</script>\n</body>",
           "trimStrings": [],
           "placement": [
             2

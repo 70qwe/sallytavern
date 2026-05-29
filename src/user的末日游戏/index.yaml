@@ -278,30 +278,22 @@
         仅格式显示: true
         仅格式提示词: false
 
-    # 整段 AI 楼层替换为界面（$body.load）；跨域时须回调里单独拉 index.js，勿用 type=module
+    # 整段 AI 楼层替换为界面；与角色卡局部正则 user的末日游戏-界面 保持一致
     - 正则名称: '[界面]前端界面末日游戏'
       id: f6ec3d54-821f-817f-fdc1-5544111111ee
       启用: true
       查找表达式: /.+/s
       内容: |-
+        <body>
         <script>
         (function () {
-          var $ = window.parent && window.parent.jQuery;
-          if (!$) {
-            console.error('[末日游戏] 找不到 jQuery');
-            return;
-          }
           var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/界面/末日游戏/';
-          var v = '20260525b';
-          $(document.body).load(u + 'index.html?' + v, function () {
-            $.ajax({ url: u + 'index.js?' + v, dataType: 'script', cache: true })
-              .done(function () { console.info('[末日游戏] index.js 已加载'); })
-              .fail(function (_x, _s, err) {
-                console.error('[末日游戏] index.js 加载失败', err || _s);
-              });
+          $('body').load(u + 'index.html', function () {
+            $.getScript(u + 'index.js');
           });
         })();
         </script>
+        </body>
       来源:
         用户输入: false
         AI输出: true
