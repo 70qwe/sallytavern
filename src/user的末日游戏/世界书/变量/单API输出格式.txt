@@ -1,6 +1,18 @@
-# 单 API 模式 · 输出约定（启用时请关闭「多API输出格式」条目）
+# 单 API 模式 · 主叙事 + 变量（一次回复完成）
 
-本条目用于：**在一次模型回复中同时输出剧情与 MVU 变量更新块**。  
-请遵循 `[mvu_update]变量更新规则` / `[mvu_update]变量输出格式` 中与 `<UpdateVariable>` 相关的格式。
+启用本条目时，请**关闭**「多api输出格式-主 / 副」。本回合 assistant 回复结构如下。
 
-（以下为占位说明，可按需在酒馆世界书编辑器内改写。）
+## 第一部分：主叙事（必须）
+
+严格遵守《主叙事输出格式-共用》：按顺序输出 `<maintext>`、`<option>`、`<sum>` 三个闭合块，不得省略或调换顺序。
+
+## 第二部分：变量更新（必须，写在三块**之后**）
+
+在 `<sum>` 结束之后，再输出 `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`），格式见 `[mvu_update]变量输出格式` 与 `[mvu_update]变量更新规则`。
+
+- **禁止**用 JSON Patch 代替 `<maintext>` 叙事。
+- **禁止**把 `<UpdateVariable>` 插在 `<maintext>` 与 `<option>` 之间。
+
+## 输出顺序小结
+
+`<maintext>` → `<option>` → `<sum>` → `<UpdateVariable>` → 结束

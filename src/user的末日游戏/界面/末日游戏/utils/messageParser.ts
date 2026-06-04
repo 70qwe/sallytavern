@@ -89,6 +89,34 @@ export interface AssistantFloorSlice {
   sum: string;
 }
 
+export type StoryFormatBlock = 'maintext' | 'option' | 'sum';
+
+export interface AssistantStoryFormatCheck {
+  ok: boolean;
+  missing: StoryFormatBlock[];
+  optionCount: number;
+}
+
+/** 检测 assistant 楼层是否含完整 maintext / option(A～D) / sum */
+export function checkAssistantStoryFormat(raw: string): AssistantStoryFormatCheck {
+  const missing: StoryFormatBlock[] = [];
+  const maintext = parseMaintext(raw);
+  const options = parseOptions(raw);
+  const sum = parseSum(raw);
+
+  if (!maintext.trim()) {
+    missing.push('maintext');
+  }
+  if (options.length < 4) {
+    missing.push('option');
+  }
+  if (!sum.trim()) {
+    missing.push('sum');
+  }
+
+  return { ok: missing.length === 0, missing, optionCount: options.length };
+}
+
 /** 枚举当前聊天中所有 assistant 楼层及其解析后的 maintext / sum */
 export function listAssistantFloorsParsed(): AssistantFloorSlice[] {
   try {

@@ -4,6 +4,7 @@
  */
 
 import { TH_DUAL_API_REROLL } from '../../dualApiEvents';
+import { scheduleFormatGuard } from './formatGuard';
 import { rerollDualSecondPass, runDualSecondPassIfNeeded } from './runDualSecondPass';
 
 /** 主 API 落盘后再跑第二路 */
@@ -16,6 +17,7 @@ function scheduleSecondPass() {
   }
   timer = setTimeout(() => {
     timer = null;
+    scheduleFormatGuard();
     errorCatched(runDualSecondPassIfNeeded)();
   }, DEBOUNCE_MS);
 }
