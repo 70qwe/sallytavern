@@ -116,11 +116,17 @@ export default function App() {
 
   const rootClass = fullscreen
     ? 'th-game-fs th-game-shell flex min-h-[100dvh] w-full min-w-0 flex-col overflow-hidden fixed inset-0 z-90'
-    : 'th-game-shell flex min-h-[min(100dvh,900px)] w-full min-w-0 flex-1 flex-col overflow-hidden md:min-h-[720px]';
+    : 'th-game-shell flex w-full min-w-0 shrink-0 flex-col overflow-hidden';
 
   return (
     <div ref={rootRef} className={rootClass} style={fontStyle}>
-      <div className="th-game-main flex min-h-0 min-w-0 flex-1 flex-col">
+      <div
+        className={
+          fullscreen
+            ? 'th-game-main flex min-h-0 min-w-0 flex-1 flex-col'
+            : 'th-game-main flex w-full shrink-0 flex-col'
+        }
+      >
       {/* 手机：剧情 / 状态 切换；md+ 隐藏 */}
       <div
         className="safe-pt-header dossier-header-strip flex shrink-0 md:hidden"
@@ -157,21 +163,31 @@ export default function App() {
         </button>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 p-2 pb-0 sm:p-3 md:flex-row md:gap-3">
+      <div
+        className={
+          fullscreen
+            ? 'flex min-h-0 flex-1 flex-col gap-3 p-2 pb-0 sm:p-3 md:flex-row md:gap-3'
+            : 'flex flex-col gap-3 p-2 pb-0 sm:p-3 md:flex-row md:items-start md:gap-3'
+        }
+      >
         {/* 桌面：侧栏始终显示；手机：仅「状态」页 */}
         <div
-          className={`min-h-0 shrink-0 md:flex md:w-80 md:overflow-y-auto ${
-            mobileMain === 'status' ? 'flex max-md:flex-1 max-md:overflow-y-auto' : 'hidden'
+          className={`shrink-0 md:flex md:w-80 ${
+            fullscreen ? 'min-h-0 md:overflow-y-auto' : ''
+          } ${
+            mobileMain === 'status'
+              ? `flex ${fullscreen ? 'max-md:flex-1 max-md:overflow-y-auto' : 'max-md:max-h-128 max-md:overflow-y-auto'}`
+              : 'hidden'
           }`}
         >
-          <Sidebar world={ui.world} player={ui.player} />
+          <Sidebar world={ui.world} player={ui.player} fullscreen={fullscreen} />
         </div>
 
         {/* 桌面：聊天始终显示；手机：仅「剧情」页 */}
         <div
-          className={`min-h-0 min-w-0 flex-1 flex-col md:flex ${
-            mobileMain === 'chat' ? 'flex max-md:flex-1' : 'hidden md:flex'
-          }`}
+          className={`min-w-0 shrink-0 flex-col md:flex md:flex-1 ${
+            mobileMain === 'chat' ? 'flex w-full' : 'hidden md:flex'
+          } ${fullscreen ? 'min-h-0 flex-1' : ''}`}
         >
           <ChatArea
             messages={chatLines}

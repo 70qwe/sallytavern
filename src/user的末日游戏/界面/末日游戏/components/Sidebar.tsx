@@ -16,13 +16,14 @@ import type { WorldInfo, PlayerInfo, NightmarePhaseKey } from '../types';
 interface SidebarProps {
   world: WorldInfo;
   player: PlayerInfo;
+  fullscreen?: boolean;
 }
 
 function worldLine(s: string): string {
   return s?.trim() ? s : '—';
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ world, player }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ world, player, fullscreen = false }) => {
   const [openAbilityPhase, setOpenAbilityPhase] = useState<NightmarePhaseKey | null>(null);
   const abilityLoreRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +42,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ world, player }) => {
   }, [openAbilityPhase]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-3 overflow-y-auto pr-0 sm:gap-4 md:w-80 md:pr-2">
+    <div
+      className={`flex w-full flex-col gap-3 pr-0 sm:gap-4 md:w-80 md:pr-2 ${
+        fullscreen ? 'h-full overflow-y-auto' : 'shrink-0'
+      }`}
+    >
       <motion.section
         className="note-paper dossier-slip p-3 sm:p-4 md:rotate-1"
         initial={{ opacity: 0, x: -12 }}

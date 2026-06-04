@@ -2,7 +2,7 @@
 
 你会收到：本回合 `<maintext>`、以及《变量列表》《变量更新规则》《变量输出格式》全文（主对话里这些条目已关闭，此处须遵守）。
 
-## 任务
+## 职责
 
 - **只输出** `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`）。
 - **禁止** `<maintext>`、`<option>`、长叙事。

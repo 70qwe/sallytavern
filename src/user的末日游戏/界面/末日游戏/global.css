@@ -44,8 +44,7 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
-  min-height: 100dvh;
+  min-height: 0;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
   color: var(--color-game-text);
@@ -73,8 +72,29 @@ body {
 #root {
   box-sizing: border-box;
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   flex-direction: column;
+  width: 100%;
+}
+
+/* 剧情正文：非全屏随内容增高，过长时在区内滚动 */
+.th-story-scroll:not(.flex-1) {
+  max-height: 28rem;
+}
+
+@media (min-width: 640px) {
+  .th-story-scroll:not(.flex-1) {
+    max-height: 36rem;
+  }
+}
+
+body:has(.th-game-fs) {
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+body:has(.th-game-fs) #root {
+  flex: 1 1 auto;
   min-height: 0;
 }
 

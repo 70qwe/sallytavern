@@ -54,13 +54,27 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    if (el.scrollHeight > el.clientHeight) {
+      el.scrollTop = el.scrollHeight;
     }
   }, [messages]);
 
+  const storyScrollClass = fullscreen
+    ? 'th-story-scroll min-h-0 flex-1 overflow-y-auto'
+    : 'th-story-scroll shrink-0 overflow-y-auto';
+
   return (
-    <div className="relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none note-paper">
+    <div
+      className={
+        fullscreen
+          ? 'relative flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-none note-paper'
+          : 'relative flex w-full shrink-0 flex-col overflow-hidden rounded-none note-paper'
+      }
+    >
       <StoryToolbar
         onOpenReading={onOpenReading}
         onOpenArchive={onOpenArchive}
@@ -71,7 +85,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
       />
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 pb-4 [-webkit-overflow-scrolling:touch] sm:space-y-6 sm:p-6 sm:pb-5"
+        className={`${storyScrollClass} space-y-4 p-3 pb-4 [-webkit-overflow-scrolling:touch] sm:space-y-6 sm:p-6 sm:pb-5`}
       >
         <AnimatePresence initial={false}>
           {messages
