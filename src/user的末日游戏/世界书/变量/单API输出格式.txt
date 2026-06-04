@@ -1,17 +1,32 @@
 # 单 API 模式 · 主叙事 + 变量（一次回复完成）
 
-启用本条目时，请**关闭**「多api输出格式-主 / 副」。本回合 assistant 回复结构如下。
+启用本条目时，请**关闭**「多api输出格式-主 / 副」。本回合 assistant 回复须按下列顺序输出；缺块、顺序错乱或把正文写在标签外，均视为无效回复。
 
-## 第一部分：主叙事（必须）
+## 禁止
 
-严格遵守《主叙事输出格式-共用》：按顺序输出 `<maintext>`、`<option>`、`<sum>` 三个闭合块，不得省略或调换顺序。
+- 禁止用 Markdown 标题代替 `<maintext>`
+- 禁止把选项写在 `<maintext>` 内，或用「1. 2. 3.」代替 `<option>`
+- 禁止省略闭合标签（须有 `</maintext>`、`</option>`、`</sum>`）
+- 禁止把 `<UpdateVariable>` 插在 `<maintext>` 与 `<option>` 之间
 
-## 第二部分：变量更新（必须，写在三块**之后**）
+## 第一部分：主叙事（必须，按顺序）
 
-在 `<sum>` 结束之后，再输出 `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`），格式见 `[mvu_update]变量输出格式` 与 `[mvu_update]变量更新规则`。
+<maintext>
+……本回合叙事正文……
+</maintext>
+<option>
+选项A: ……（偏直接推进、立刻行动或正面冲突）
+选项B: ……（偏迂回、观察情报与风险再动手）
+选项C: ……（偏大胆直球的色情/支配张力，须与场景协调）
+选项D: ……（偏自我提升：训练、压制污染、技能或营地经营等）
+</option>
+<sum>
+用 1～2 句话精准概括本回合发生了什么，并点明时间、地点、人物、事件。
+</sum>
 
-- **禁止**用 JSON Patch 代替 `<maintext>` 叙事。
-- **禁止**把 `<UpdateVariable>` 插在 `<maintext>` 与 `<option>` 之间。
+## 第二部分：变量更新（必须，写在 `<sum>` 之后）
+
+输出 `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`），格式见 `[mvu_update]变量输出格式` 与 `[mvu_update]变量更新规则`。
 
 ## 输出顺序小结
 

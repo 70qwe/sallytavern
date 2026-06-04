@@ -10,8 +10,6 @@ export const WB_ENTRY_ALIASES = {
   updateRules: ['[mvu_update]变量更新规则', '变量更新规则'],
   mvuOutputFormat: ['[mvu_update]变量输出格式', '变量输出格式'],
   singleApiFormat: ['单API输出格式', '单api输出格式'],
-  /** 单/双 API 主路均须遵守的 maintext / option / sum 结构 */
-  sharedMainFormat: ['主叙事输出格式-共用', '主叙事输出格式'],
   /** 旧版单条「多api输出格式」；双 API 时须关闭，避免与 -主/-副 重复 */
   dualLegacySingle: ['多API输出格式', '多api输出格式'],
   dualMainFormat: ['多API输出格式-主', '多api输出格式-主'],
@@ -59,10 +57,6 @@ function isDualSubEntry(trimmedName: string): boolean {
 
 function isLegacyDualSingleEntry(trimmedName: string): boolean {
   return nameIn(WB_ENTRY_ALIASES.dualLegacySingle, trimmedName);
-}
-
-function isSharedMainFormatEntry(trimmedName: string): boolean {
-  return nameIn(WB_ENTRY_ALIASES.sharedMainFormat, trimmedName);
 }
 
 /** 解析含有「变量 / 多API」相关条目的世界书（主绑角色卡或当前聊天） */
@@ -129,9 +123,6 @@ export async function applyWorldbookOutputMode(mode: 'single' | 'dual'): Promise
         }
         if (isSingleApiBundleEntry(n)) {
           return { ...e, enabled: enableSingle };
-        }
-        if (isSharedMainFormatEntry(n)) {
-          return { ...e, enabled: enableSingle || enableDual };
         }
         if (isDualMainEntry(n) || isDualSubEntry(n)) {
           return { ...e, enabled: enableDual };

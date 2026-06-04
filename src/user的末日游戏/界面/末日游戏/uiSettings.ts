@@ -15,7 +15,7 @@ const DualApiSchema = z.object({
 });
 
 export const UiSettingsSchema = z.object({
-  outputMode: z.enum(['single', 'dual']).default('dual'),
+  outputMode: z.enum(['single', 'dual']).default('single'),
   /** 根字号 px */
   fontSizePx: z.number().min(12).max(28).default(15),
   /** 界面字体族预设 */

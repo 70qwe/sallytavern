@@ -32,7 +32,7 @@ async function inspectLatestAssistantFormat(): Promise<void> {
   const hint = formatMissingHint(check.missing, check.optionCount);
   console.warn('[输出格式] 最新 assistant 楼层缺少:', check.missing, { optionCount: check.optionCount });
   toastr.warning(
-    `本楼缺少：${hint}。请点「重新生成」或检查世界书是否启用「主叙事输出格式-共用」与「多api输出格式-主」。`,
+    `本楼缺少：${hint}。请点「重新生成」；单 API 请确认已启用「单API输出格式」，双 API 请启用「多api输出格式-主」。`,
     '输出格式不完整',
     { timeOut: 12000 },
   );
