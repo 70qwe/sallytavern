@@ -154,7 +154,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ world, player }) => {
                   return (
                     <div
                       role="tooltip"
-                      className="absolute bottom-full left-0 right-0 z-[100] mb-1 flex justify-center px-0.5"
+                      className="absolute bottom-full left-0 right-0 z-100 mb-1 flex justify-center px-0.5"
                     >
                       <div className="pointer-events-auto max-h-[min(50vh,22rem)] w-full max-w-[min(22rem,calc(100%-0.25rem))] overflow-y-auto whitespace-normal rounded-lg border border-game-border bg-game-paper-bright p-2.5 text-left text-[11px] leading-snug text-game-text shadow-md">
                         <div className="font-bold text-game-accent">{a.name}</div>

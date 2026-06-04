@@ -115,7 +115,7 @@ export default function App() {
   }, [patchSettings]);
 
   const rootClass = fullscreen
-    ? 'th-game-fs th-game-shell flex min-h-[100dvh] w-full min-w-0 flex-col overflow-hidden fixed inset-0 z-[90]'
+    ? 'th-game-fs th-game-shell flex min-h-[100dvh] w-full min-w-0 flex-col overflow-hidden fixed inset-0 z-90'
     : 'th-game-shell flex min-h-[min(100dvh,900px)] w-full min-w-0 flex-1 flex-col overflow-hidden md:min-h-[720px]';
 
   return (
@@ -212,7 +212,7 @@ export default function App() {
 
       {showDualApiSetupBanner && (
         <div
-          className="pointer-events-auto fixed inset-0 z-[90] flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
+          className="pointer-events-auto fixed inset-0 z-90 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
           role="dialog"
           aria-modal="true"
           aria-labelledby="th-dual-api-setup-title"

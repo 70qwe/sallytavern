@@ -155,7 +155,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
             placeholder={
               sending ? '正在等待主 API 回复…' : '输入行动或对话，Enter 发送，Shift+Enter 换行'
             }
-            className="max-h-32 min-h-[2.5rem] flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed text-game-text placeholder:text-gray-400 focus:outline-none sm:min-h-[2.75rem] sm:px-3"
+            className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed text-game-text placeholder:text-gray-400 focus:outline-none sm:min-h-11 sm:px-3"
             onChange={e => setDraft(e.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter' && !e.shiftKey && !composingRef.current) {
@@ -173,7 +173,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
           <button
             type="button"
             disabled={sending || !draft.trim()}
-            className="touch-manipulation mb-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-game-accent text-[#f8f0e6] shadow-md transition-all duration-200 hover:translate-y-[-1px] hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40 sm:h-11 sm:w-11"
+            className="touch-manipulation mb-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-game-accent text-[#f8f0e6] shadow-md transition-all duration-200 hover:-translate-y-px hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40 sm:h-11 sm:w-11"
             aria-label="发送消息"
             onClick={() => void send()}
           >

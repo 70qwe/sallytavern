@@ -483,7 +483,7 @@ function InventoryGrid({ items }: { items: GameUi['inventory']['items'] }) {
       {items.map(it => (
         <div key={it.id} className="flex min-w-0 flex-col items-stretch">
           <div
-            className="polaroid-slot flex aspect-square min-h-[3.75rem] flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-[4.25rem]"
+            className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-17"
             title={it.description.trim() || it.name}
           >
             <span className="line-clamp-3 text-[11px] font-bold leading-snug text-game-text sm:text-xs">
@@ -508,7 +508,7 @@ function ShopGrid({ items, playerSp }: { items: GameUi['shopItems']; playerSp: n
         {slots.map(s => (
           <div key={s.id} className="flex min-w-0 flex-col items-stretch">
             <div
-              className="polaroid-slot flex aspect-square min-h-[3.75rem] flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-[4.25rem]"
+              className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-17"
               title={s.note}
             >
               <span className="line-clamp-3 text-[11px] font-bold leading-snug text-game-text sm:text-xs">
