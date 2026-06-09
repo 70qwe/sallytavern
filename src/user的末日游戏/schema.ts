@@ -158,8 +158,10 @@ export const Schema = z
             价格: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
           }),
         ),
+        /** 脚本维护：与 世界.生存天数 对齐，LLM 勿 Patch */
+        _商城刷新于天数: z.coerce.number().transform(v => _.clamp(v, 0, 99999)).prefault(0),
       })
-      .prefault({ 系统商城: {}, 玩家交易: {} }),
+      .prefault({ 系统商城: {}, 玩家交易: {}, _商城刷新于天数: 0 }),
     副本列表: z
       .record(
         z.string(),

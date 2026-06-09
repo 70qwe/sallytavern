@@ -339,3 +339,10 @@
         内容: |-
           import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/多API串联/index.js';
 
+      - 名称: 商城刷新
+        id: a57ac6e7-8d0a-4e4f-b867-667788990011
+        启用: true
+        类型: 脚本
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/user的末日游戏/脚本/商城刷新/index.js';
+
