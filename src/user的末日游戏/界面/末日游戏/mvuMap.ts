@@ -7,6 +7,7 @@ import type {
     ShopItem,
     WorldInfo
 } from './types';
+import { mapClothing } from './clothing';
 
 const RATINGS: readonly Rating[] = ['E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
 
@@ -86,6 +87,7 @@ export function statToPlayerInfo(s: StatData): PlayerInfo {
     agility: { current: p.敏捷.当前 ?? null, max: p.敏捷.上限 },
     rating: p.角色总评,
     ratingComment: p.角色总评评语,
+    clothing: mapClothing(p.衣着),
   };
 }
 
@@ -132,6 +134,7 @@ export function statToHuntingList(s: StatData): HuntingList {
       location: t.当前位置,
       status: t.当前状态,
       estimatedSP: t.预计产出SP,
+      clothing: mapClothing(t.衣着),
     }))
     .filter(t => t.name.trim() || t.uid || t.nickname.trim());
 
@@ -152,6 +155,7 @@ export function statToHuntingList(s: StatData): HuntingList {
       status: t.当前状态或用途,
       purpose: t.当前状态或用途,
       estimatedSP: t.预计产出SP,
+      clothing: mapClothing(t.衣着),
     }))
     .filter(s => s.name.trim() || s.uid || s.nickname.trim());
 

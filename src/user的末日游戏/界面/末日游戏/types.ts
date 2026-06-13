@@ -1,5 +1,8 @@
 export type Rating = 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
 
+export type { Clothing, ClothingSlot } from './clothing';
+import type { Clothing } from './clothing';
+
 export interface WorldInfo {
   date: string;
   location: string;
@@ -34,6 +37,7 @@ export interface PlayerInfo {
   agility: { current: number | null; max: number };
   rating: Rating;
   ratingComment: string;
+  clothing: Clothing;
 }
 
 export interface Item {
@@ -65,6 +69,7 @@ export interface TargetStats {
   location: string;
   status: string;
   estimatedSP: number;
+  clothing: Clothing;
 }
 
 export interface SlaveStats extends Omit<TargetStats, 'corruption' | 'estimatedSP'> {

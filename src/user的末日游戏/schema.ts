@@ -15,6 +15,20 @@ const PlayerStatPair = z
   })
   .prefault({ 上限: 100 });
 
+const Clothing = z
+  .object({
+    上衣: z.string().prefault(''),
+    下装: z.string().prefault(''),
+    外套: z.string().prefault(''),
+    帽子: z.string().prefault(''),
+    内衣裤: z.string().prefault(''),
+    袜子: z.string().prefault(''),
+    鞋子: z.string().prefault(''),
+    饰品: z.string().prefault(''),
+    手持物: z.string().prefault(''),
+  })
+  .prefault({});
+
 const HuntActiveEntry = z
   .object({
     姓名: z.string().prefault(''),
@@ -33,6 +47,7 @@ const HuntActiveEntry = z
     当前位置: z.string().prefault(''),
     当前状态: z.string().prefault(''),
     预计产出SP: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
+    衣着: Clothing,
   })
   .prefault({});
 
@@ -53,6 +68,7 @@ const SlaveEntry = z
     当前位置: z.string().prefault(''),
     当前状态或用途: z.string().prefault(''),
     预计产出SP: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
+    衣着: Clothing,
   })
   .prefault({});
 
@@ -92,6 +108,7 @@ export const Schema = z
         敏捷: PlayerStatPair,
         角色总评: Rarity.prefault('E'),
         角色总评评语: z.string().prefault(''),
+        衣着: Clothing,
       })
       .prefault({}),
     背包: z

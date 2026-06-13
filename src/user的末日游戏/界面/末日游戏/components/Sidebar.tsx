@@ -12,6 +12,7 @@ import {
   Dna,
 } from 'lucide-react';
 import type { WorldInfo, PlayerInfo, NightmarePhaseKey } from '../types';
+import { ClothingPanel } from './ClothingPanel';
 
 interface SidebarProps {
   world: WorldInfo;
@@ -212,6 +213,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ world, player, fullscreen = fa
             <Dna className="h-4 w-4 text-gray-400" />
           </div>
           <p className="text-xs italic leading-snug text-gray-500">{player.ratingComment}</p>
+
+          <div className="border-t border-game-border pt-2">
+            <ClothingPanel clothing={player.clothing} />
+          </div>
         </div>
       </motion.section>
     </div>

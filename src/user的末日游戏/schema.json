@@ -135,6 +135,9 @@
         "角色总评评语": {
           "default": "",
           "type": "string"
+        },
+        "衣着": {
+          "$ref": "#/$defs/__schema2"
         }
       }
     },
@@ -237,13 +240,13 @@
                 "type": "string"
               },
               "力量": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "体质": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "敏捷": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "沦陷度": {
                 "default": 0,
@@ -260,6 +263,9 @@
               "预计产出SP": {
                 "default": 0,
                 "type": "number"
+              },
+              "衣着": {
+                "$ref": "#/$defs/__schema2"
               }
             }
           }
@@ -310,13 +316,13 @@
                 "type": "string"
               },
               "力量": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "体质": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "敏捷": {
-                "$ref": "#/$defs/__schema2"
+                "$ref": "#/$defs/__schema3"
               },
               "当前位置": {
                 "default": "",
@@ -329,6 +335,9 @@
               "预计产出SP": {
                 "default": 0,
                 "type": "number"
+              },
+              "衣着": {
+                "$ref": "#/$defs/__schema2"
               }
             }
           }
@@ -576,6 +585,48 @@
       ]
     },
     "__schema2": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "上衣": {
+          "default": "",
+          "type": "string"
+        },
+        "下装": {
+          "default": "",
+          "type": "string"
+        },
+        "外套": {
+          "default": "",
+          "type": "string"
+        },
+        "帽子": {
+          "default": "",
+          "type": "string"
+        },
+        "内衣裤": {
+          "default": "",
+          "type": "string"
+        },
+        "袜子": {
+          "default": "",
+          "type": "string"
+        },
+        "鞋子": {
+          "default": "",
+          "type": "string"
+        },
+        "饰品": {
+          "default": "",
+          "type": "string"
+        },
+        "手持物": {
+          "default": "",
+          "type": "string"
+        }
+      }
+    },
+    "__schema3": {
       "default": {},
       "type": "object",
       "properties": {

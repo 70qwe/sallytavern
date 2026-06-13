@@ -14,6 +14,7 @@ import type { ForumPost } from '../types';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useState } from 'react';
 import type { GameUi } from '../mvuMap';
+import { ClothingPanel } from './ClothingPanel';
 
 export type ModalId =
   | 'inventory'
@@ -187,6 +188,7 @@ function HuntingBody({ ui }: { ui: GameUi }) {
                   semenQuality={t.semenQuality}
                   estimatedSP={t.estimatedSP}
                 />
+                <ClothingPanel clothing={t.clothing} compact />
               </li>
             ))}
           </ul>
@@ -221,6 +223,7 @@ function HuntingBody({ ui }: { ui: GameUi }) {
                   semenQuality={s.semenQuality}
                   estimatedSP={s.estimatedSP}
                 />
+                <ClothingPanel clothing={s.clothing} compact />
               </li>
             ))}
           </ul>
