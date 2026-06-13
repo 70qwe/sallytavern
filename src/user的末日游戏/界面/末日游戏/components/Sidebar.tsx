@@ -172,6 +172,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ world, player, fullscreen = fa
             </div>
           </div>
 
+          <ClothingPanel
+            clothing={player.clothing}
+            title="衣着一览"
+            emptyText="空"
+            collapsible
+          />
+
           <div className="grid grid-cols-3 gap-2 border-t border-game-border pt-2 text-center text-xs">
             <div>
               <Zap className="mx-auto mb-1 h-4 w-4 text-yellow-500" />
@@ -213,10 +220,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ world, player, fullscreen = fa
             <Dna className="h-4 w-4 text-gray-400" />
           </div>
           <p className="text-xs italic leading-snug text-gray-500">{player.ratingComment}</p>
-
-          <div className="border-t border-game-border pt-2">
-            <ClothingPanel clothing={player.clothing} />
-          </div>
         </div>
       </motion.section>
     </div>
