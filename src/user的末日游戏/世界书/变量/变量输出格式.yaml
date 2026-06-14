@@ -4,6 +4,7 @@
     - 回复末尾一次输出 <UpdateVariable>，含 <Analysis> 与 <JSONPatch>
     - Patch 为合法 JSON 数组；op 支持 replace / delta / insert / remove / move（数组追加用 path 末尾 `/-`）
     - 勿 Patch 以 `_` 开头的只读字段（如 _商城刷新于天数）
+    - 若 /主角/衣着 九槽仍皆 ""：须在本回合 Patch 写入（据 maintext 穿脱描写，或据 {{user}}·地点·天气·季节推断默认着装；至少上衣/下装/鞋子）
   format: |-
     <UpdateVariable>
     <Analysis>$(ENGLISH, ≤80 words: time passed; dramatic update allowed y/n; per-field check summary)</Analysis>

@@ -16,6 +16,15 @@ import React, { useState } from 'react';
 import type { GameUi } from '../mvuMap';
 import { ClothingPanel } from './ClothingPanel';
 
+/** 背包 / 交易行点击物品后的详情弹层 */
+export interface ItemDetailView {
+  name: string;
+  description: string;
+  /** 仅背包 */
+  source?: string;
+  meta?: { label: string; value: string }[];
+}
+
 export type ModalId =
   | 'inventory'
   | 'hunting'
@@ -34,8 +43,10 @@ interface SystemModalsProps {
 export const SystemModals: React.FC<SystemModalsProps> = ({ active, onClose, ui }) => {
   const [forumTab, setForumTab] = useState<'posts' | 'dm'>('posts');
   const [tradeTab, setTradeTab] = useState<'shop' | 'player'>('shop');
+  const [itemDetail, setItemDetail] = useState<ItemDetailView | null>(null);
 
   return (
+    <>
     <AnimatePresence>
       {active && (
         <motion.div
@@ -77,13 +88,15 @@ export const SystemModals: React.FC<SystemModalsProps> = ({ active, onClose, ui 
             </header>
 
             <div className="safe-pb-nav min-h-0 flex-1 overflow-y-auto p-3 text-sm [-webkit-overflow-scrolling:touch] sm:p-4">
-              {active === 'inventory' && <InventoryBody ui={ui} />}
+              {active === 'inventory' && (
+                <InventoryBody ui={ui} onItemClick={setItemDetail} />
+              )}
               {active === 'hunting' && <HuntingBody ui={ui} />}
               {active === 'forum' && (
                 <ForumBody ui={ui} tab={forumTab} setTab={setForumTab} />
               )}
               {active === 'trade' && (
-                <TradeBody ui={ui} tab={tradeTab} setTab={setTradeTab} />
+                <TradeBody ui={ui} tab={tradeTab} setTab={setTradeTab} onItemClick={setItemDetail} />
               )}
               {active === 'dungeons' && <DungeonsBody ui={ui} />}
               {active === 'leaderboard' && <LeaderboardBody ui={ui} />}
@@ -93,6 +106,8 @@ export const SystemModals: React.FC<SystemModalsProps> = ({ active, onClose, ui 
         </motion.div>
       )}
     </AnimatePresence>
+    <ItemDetailModal detail={itemDetail} onClose={() => setItemDetail(null)} />
+    </>
   );
 };
 
@@ -109,7 +124,13 @@ function titleFor(id: ModalId): string {
   return m[id];
 }
 
-function InventoryBody({ ui }: { ui: GameUi }) {
+function InventoryBody({
+  ui,
+  onItemClick,
+}: {
+  ui: GameUi;
+  onItemClick: (d: ItemDetailView) => void;
+}) {
   const { inventory } = ui;
   const itemCount = inventory.items.reduce((sum, it) => sum + it.count, 0);
   return (
@@ -127,7 +148,23 @@ function InventoryBody({ ui }: { ui: GameUi }) {
       {inventory.items.length === 0 ? (
         <Empty hint="暂无物品（获得物品后会显示名称与数量）" />
       ) : (
-        <InventoryGrid items={inventory.items} />
+        <>
+          <p className="text-center text-[10px] text-gray-400">点击物品查看描述与获取来源</p>
+          <InventoryGrid
+            items={inventory.items}
+            onItemClick={it =>
+              onItemClick({
+                name: it.name,
+                description: it.description,
+                source: it.source,
+                meta: [
+                  { label: '数量', value: `×${it.count}` },
+                  ...(it.rarity ? [{ label: '稀有度', value: it.rarity }] : []),
+                ],
+              })
+            }
+          />
+        </>
       )}
     </div>
   );
@@ -365,10 +402,12 @@ function TradeBody({
   ui,
   tab,
   setTab,
+  onItemClick,
 }: {
   ui: GameUi;
   tab: 'shop' | 'player';
   setTab: (t: 'shop' | 'player') => void;
+  onItemClick: (d: ItemDetailView) => void;
 }) {
   return (
     <div className="space-y-3">
@@ -392,26 +431,61 @@ function TradeBody({
         (ui.shopItems.length === 0 ? (
           <Empty hint="商城暂无上架" />
         ) : (
-          <ShopGrid items={ui.shopItems} playerSp={ui.player.sp} />
+          <>
+            <p className="text-center text-[10px] text-gray-400">点击商品查看描述</p>
+            <ShopGrid
+              items={ui.shopItems}
+              playerSp={ui.player.sp}
+              onItemClick={s =>
+                onItemClick({
+                  name: s.name,
+                  description: s.description,
+                  meta: [
+                    { label: '价格', value: `${s.price} SP` },
+                    ...(s.note ? [{ label: '备注', value: s.note }] : []),
+                  ],
+                })
+              }
+            />
+          </>
         ))}
       {tab === 'player' &&
         (ui.playerTrades.length === 0 ? (
           <Empty hint="暂无玩家挂单" />
         ) : (
-          <ul className="space-y-2">
-            {ui.playerTrades.map(t => (
-              <li key={t.id} className="dossier-card rounded-lg p-3 space-y-1">
-                <div className="flex justify-between">
-                  <span className="font-bold">{t.name}</span>
-                  <span className="font-bold text-game-accent">{t.price}</span>
-                </div>
-                <div className="text-xs text-gray-500 flex justify-between">
-                  <span>{t.seller}</span>
-                  <span>{t.time}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <>
+            <p className="text-center text-[10px] text-gray-400">点击挂单查看描述</p>
+            <ul className="space-y-2">
+              {ui.playerTrades.map(t => (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    className="dossier-card w-full rounded-lg p-3 space-y-1 text-left transition-colors hover:bg-game-paper/60"
+                    onClick={() =>
+                      onItemClick({
+                        name: t.name,
+                        description: t.description,
+                        meta: [
+                          { label: '价格', value: `${t.price} SP` },
+                          { label: '售卖人', value: t.seller || '—' },
+                          { label: '上架', value: t.time || '—' },
+                        ],
+                      })
+                    }
+                  >
+                    <div className="flex justify-between">
+                      <span className="font-bold">{t.name}</span>
+                      <span className="font-bold text-game-accent">{t.price}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 flex justify-between">
+                      <span>{t.seller}</span>
+                      <span>{t.time}</span>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
         ))}
     </div>
   );
@@ -480,19 +554,26 @@ function SeasonBody({ ui }: { ui: GameUi }) {
 
 const SHOP_GRID_SLOTS = 10;
 
-function InventoryGrid({ items }: { items: GameUi['inventory']['items'] }) {
+function InventoryGrid({
+  items,
+  onItemClick,
+}: {
+  items: GameUi['inventory']['items'];
+  onItemClick: (item: GameUi['inventory']['items'][number]) => void;
+}) {
   return (
     <div className="grid grid-cols-5 gap-2 sm:gap-2.5">
       {items.map(it => (
         <div key={it.id} className="flex min-w-0 flex-col items-stretch">
-          <div
-            className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-17"
-            title={it.description.trim() || it.name}
+          <button
+            type="button"
+            className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center transition-transform hover:-translate-y-0.5 sm:min-h-17"
+            onClick={() => onItemClick(it)}
           >
             <span className="line-clamp-3 text-[11px] font-bold leading-snug text-game-text sm:text-xs">
               {it.name}
             </span>
-          </div>
+          </button>
           <p className="polaroid-price mt-1.5 text-center text-xs sm:text-sm">×{it.count}</p>
         </div>
       ))}
@@ -500,7 +581,15 @@ function InventoryGrid({ items }: { items: GameUi['inventory']['items'] }) {
   );
 }
 
-function ShopGrid({ items, playerSp }: { items: GameUi['shopItems']; playerSp: number }) {
+function ShopGrid({
+  items,
+  playerSp,
+  onItemClick,
+}: {
+  items: GameUi['shopItems'];
+  playerSp: number;
+  onItemClick: (item: GameUi['shopItems'][number]) => void;
+}) {
   const slots = items.slice(0, SHOP_GRID_SLOTS);
   return (
     <div className="space-y-3">
@@ -510,14 +599,15 @@ function ShopGrid({ items, playerSp }: { items: GameUi['shopItems']; playerSp: n
       <div className="grid grid-cols-5 grid-rows-2 gap-2 sm:gap-2.5">
         {slots.map(s => (
           <div key={s.id} className="flex min-w-0 flex-col items-stretch">
-            <div
-              className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center sm:min-h-17"
-              title={s.note}
+            <button
+              type="button"
+              className="polaroid-slot flex aspect-square min-h-15 flex-col items-center justify-center gap-0.5 p-1.5 text-center transition-transform hover:-translate-y-0.5 sm:min-h-17"
+              onClick={() => onItemClick(s)}
             >
               <span className="line-clamp-3 text-[11px] font-bold leading-snug text-game-text sm:text-xs">
                 {s.name}
               </span>
-            </div>
+            </button>
             <p className="polaroid-price mt-1.5 text-center text-xs sm:text-sm">{s.price} SP</p>
           </div>
         ))}
@@ -526,6 +616,77 @@ function ShopGrid({ items, playerSp }: { items: GameUi['shopItems']; playerSp: n
         <p className="text-center text-[10px] text-gray-400">另有 {items.length - SHOP_GRID_SLOTS} 件未显示</p>
       ) : null}
     </div>
+  );
+}
+
+function ItemDetailModal({
+  detail,
+  onClose,
+}: {
+  detail: ItemDetailView | null;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {detail ? (
+        <motion.div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="item-detail-title"
+            className="note-paper max-h-[min(80vh,28rem)] w-full max-w-md overflow-y-auto rounded-lg p-4 shadow-xl"
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 4 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="mb-3 flex items-start justify-between gap-2">
+              <h3 id="item-detail-title" className="font-heading text-lg text-game-accent">
+                {detail.name}
+              </h3>
+              <button
+                type="button"
+                className="shrink-0 rounded p-1 text-game-text-muted hover:bg-game-paper"
+                aria-label="关闭"
+                onClick={onClose}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            {detail.meta && detail.meta.length > 0 ? (
+              <dl className="mb-3 space-y-1 text-xs text-game-text-muted">
+                {detail.meta.map(row => (
+                  <div key={row.label} className="flex justify-between gap-3">
+                    <dt>{row.label}</dt>
+                    <dd className="text-right font-medium text-game-text">{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+            <section className="space-y-2 border-t border-game-border pt-3">
+              <h4 className="text-xs font-bold uppercase tracking-wide text-game-text-muted">描述</h4>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-game-text">
+                {detail.description.trim() || '（暂无描述）'}
+              </p>
+            </section>
+            {detail.source !== undefined ? (
+              <section className="mt-3 space-y-2 border-t border-game-border pt-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-game-text-muted">获取来源</h4>
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-game-text">
+                  {detail.source.trim() || '（未知）'}
+                </p>
+              </section>
+            ) : null}
+          </motion.div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 

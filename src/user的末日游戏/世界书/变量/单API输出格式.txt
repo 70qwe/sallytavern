@@ -29,6 +29,8 @@
 
 输出 `<UpdateVariable>…</UpdateVariable>`（含英文 `<Analysis>` 与合法 JSON 数组的 `<JSONPatch>`），格式见 `[mvu_update]变量输出格式` 与 `[mvu_update]变量更新规则`。
 
+**衣着自检**：若 `/主角/衣着` 九槽仍皆空，本回合 Patch 必须写入默认着装（优先服从 maintext 穿脱描写；否则据 {{user}}·地点·天气·季节推断；至少上衣/下装/鞋子）。
+
 ## 输出顺序小结
 
 `<maintext>` → `<option>` → `<sum>` → `<UpdateVariable>` → 结束

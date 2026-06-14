@@ -180,6 +180,10 @@
             "default": "",
             "type": "string"
           },
+          "获取来源": {
+            "default": "",
+            "type": "string"
+          },
           "稀有度": {
             "default": "D",
             "$ref": "#/$defs/__schema1"
@@ -435,6 +439,10 @@
                 "default": 0,
                 "type": "number"
               },
+              "描述": {
+                "default": "",
+                "type": "string"
+              },
               "备注": {
                 "default": "",
                 "type": "string"
@@ -451,6 +459,10 @@
             "type": "object",
             "properties": {
               "物品名称": {
+                "default": "",
+                "type": "string"
+              },
+              "描述": {
                 "default": "",
                 "type": "string"
               },

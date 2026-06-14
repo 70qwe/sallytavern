@@ -125,6 +125,7 @@ export const Schema = z
           数量: z.coerce.number().transform(v => _.clamp(v, 0, 999999)).prefault(1),
           最大堆叠: z.coerce.number().transform(v => _.clamp(v, 1, 999999)).prefault(99),
           描述: z.string().prefault(''),
+          获取来源: z.string().prefault(''),
           稀有度: Rarity.prefault('D'),
         }),
       )
@@ -163,6 +164,7 @@ export const Schema = z
           z.object({
             名称: z.string().prefault(''),
             价格: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
+            描述: z.string().prefault(''),
             备注: z.string().prefault(''),
           }),
         ),
@@ -170,6 +172,7 @@ export const Schema = z
           z.string(),
           z.object({
             物品名称: z.string().prefault(''),
+            描述: z.string().prefault(''),
             售卖人: z.string().prefault(''),
             上架时间: z.string().prefault(''),
             价格: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),

@@ -43,7 +43,7 @@ function normalizeItemEntry(key: string, raw: unknown): Record<string, unknown> 
   }
   if (typeof raw === 'string') {
     const name = raw.trim();
-    return name ? { 名称: name, 数量: 1, 描述: '', 最大堆叠: 99, 稀有度: 'D' } : null;
+    return name ? { 名称: name, 数量: 1, 描述: '', 获取来源: '', 最大堆叠: 99, 稀有度: 'D' } : null;
   }
   if (typeof raw !== 'object' || Array.isArray(raw)) {
     return null;
@@ -62,6 +62,7 @@ function normalizeItemEntry(key: string, raw: unknown): Record<string, unknown> 
     名称: name,
     数量: count,
     描述: String(o.描述 ?? o.description ?? ''),
+    获取来源: String(o.获取来源 ?? o.source ?? ''),
     最大堆叠: Number(o.最大堆叠 ?? o.maxStack ?? 99) || 99,
     稀有度: o.稀有度 ?? o.rarity ?? 'D',
   };

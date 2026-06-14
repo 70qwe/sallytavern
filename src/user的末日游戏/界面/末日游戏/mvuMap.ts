@@ -103,7 +103,9 @@ export function statToInventory(s: StatData): Inventory {
         id,
         name,
         description: i.描述 ?? '',
+        source: i.获取来源 ?? '',
         count,
+        rarity: i.稀有度,
       };
     })
     .filter((it): it is NonNullable<typeof it> => it !== null)
@@ -212,6 +214,7 @@ export function statToShopItems(s: StatData): ShopItem[] {
     id: `sys_${id}`,
     name: m.名称,
     price: m.价格,
+    description: m.描述 ?? '',
     note: m.备注?.trim() || undefined,
   }));
 }
@@ -220,6 +223,7 @@ export function statToPlayerTrades(s: StatData): PlayerTradeItem[] {
   return Object.entries(s.交易行.玩家交易).map(([id, m]) => ({
     id: `ply_${id}`,
     name: m.物品名称,
+    description: m.描述 ?? '',
     seller: m.售卖人,
     time: m.上架时间,
     price: m.价格,

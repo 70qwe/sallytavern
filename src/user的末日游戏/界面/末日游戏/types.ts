@@ -44,7 +44,10 @@ export interface Item {
   id: string;
   name: string;
   description: string;
+  /** 从何处获取（仅背包物品栏） */
+  source: string;
   count: number;
+  rarity?: Rating;
 }
 
 export interface Inventory {
@@ -111,12 +114,14 @@ export interface ShopItem {
   id: string;
   name: string;
   price: number;
+  description: string;
   note?: string;
 }
 
 export interface PlayerTradeItem {
   id: string;
   name: string;
+  description: string;
   seller: string;
   time: string;
   price: number;
