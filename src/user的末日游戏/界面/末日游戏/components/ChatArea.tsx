@@ -113,6 +113,14 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                     </div>
                   </details>
                 ) : null}
+                {m.smallTheaters?.map(st => (
+                  <div
+                    key={st.id}
+                    className="small-theater-preset mt-4 overflow-hidden rounded-lg"
+                    // 预设要求 section/details 内带行内 style，原样渲染 HTML
+                    dangerouslySetInnerHTML={{ __html: st.html }}
+                  />
+                ))}
               </motion.article>
             ))}
         </AnimatePresence>

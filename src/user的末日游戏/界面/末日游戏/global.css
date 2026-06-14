@@ -401,6 +401,35 @@ body:has(.th-game-fs) #root {
   color: var(--color-game-accent-dark);
 }
 
+.small-theater-preset {
+  border: 1px dashed var(--color-game-secondary);
+  background: rgba(255, 252, 245, 0.75);
+}
+
+.small-theater-preset section {
+  margin: 0;
+}
+
+.small-theater-preset details {
+  border: none;
+}
+
+.small-theater-preset summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-heading);
+}
+
+.small-theater-preset summary::-webkit-details-marker {
+  display: none;
+}
+
+.small-theater-preset details[open] > :not(summary) {
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-top: 1px solid rgba(196, 167, 125, 0.35);
+}
+
 .forum-file-row {
   background: var(--color-game-paper-bright);
   border: 1px solid var(--color-game-border);

@@ -2,9 +2,9 @@
  * 消息解析：从 assistant 楼层正文提取 <maintext>、<option>、预设 <puppy> 等（排除 thinking 区内标签）
  */
 
-import type { PresetPuppyTheater } from '../mvuMap';
+import type { PresetPuppyTheater, PresetSmallTheater } from '../mvuMap';
 
-export type { PresetPuppyTheater };
+export type { PresetPuppyTheater, PresetSmallTheater };
 
 /**
  * 移除推理/thinking 相关块后再做标签解析
@@ -312,11 +312,12 @@ const NON_NARRATIVE_BLOCK_TAGS = [
 ] as const;
 
 /** 主叙事外、单独展示的预设附加块 */
-const PRESET_EXTRA_DISPLAY_TAGS = ['puppy'] as const;
+const PRESET_EXTRA_DISPLAY_TAGS = ['puppy', 'content'] as const;
 
 export interface AssistantStoryDisplay {
   main: string;
   puppy: PresetPuppyTheater | null;
+  smallTheaters: PresetSmallTheater[];
 }
 
 function extractLastTagInner(raw: string, tagName: string): string {
@@ -367,6 +368,129 @@ export function parsePuppyTheater(messageContent: string): PresetPuppyTheater | 
   }
 
   return { title, body };
+}
+
+function stripHtmlTags(text: string): string {
+  return text.replace(/<[^>]+>/g, '').trim();
+}
+
+/** 预设小剧场 HTML：去掉 script 与行内事件，保留允许的标签与 style */
+function sanitizePresetTheaterHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+}
+
+function wrapSectionInner(inner: string): string {
+  const trimmed = inner.trim();
+  if (/^<section[\s>]/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `<section>${trimmed}</section>`;
+}
+
+function sectionTitle(sectionHtml: string, fallback: string): string {
+  const summaryMatch = sectionHtml.match(/<summary[^>]*>([\s\S]*?)<\/summary\s*>/i);
+  const title = stripHtmlTags(summaryMatch?.[1] ?? '');
+  return title || fallback;
+}
+
+function sectionToTheater(sectionHtml: string, index: number, name?: string): PresetSmallTheater | null {
+  const html = sanitizePresetTheaterHtml(wrapSectionInner(sectionHtml));
+  if (!html || !/<details[\s>]/i.test(html)) {
+    return null;
+  }
+  const fallback = name?.trim() || `小剧场 ${index + 1}`;
+  return {
+    id: `small-theater-${index}-${name ?? 'section'}`,
+    name: name?.trim() || undefined,
+    title: sectionTitle(html, fallback),
+    html,
+  };
+}
+
+function extractSectionInners(source: string): string[] {
+  const re = /<section\s*>([\s\S]*?)<\/section\s*>/gi;
+  return [...source.matchAll(re)].map(m => m[1]?.trim() ?? '').filter(Boolean);
+}
+
+function collectSmallTheaterSources(raw: string): { inner: string; name?: string }[] {
+  const sources: { inner: string; name?: string }[] = [];
+  const contentRe = /<content\s*>([\s\S]*?)<\/content\s*>/gi;
+  for (const match of raw.matchAll(contentRe)) {
+    const inner = match[1]?.trim();
+    if (inner) {
+      sources.push({ inner });
+    }
+  }
+
+  const namedRe = /<small_theater:([^>\s]+)\s*>([\s\S]*?)<\/small_theater:\1\s*>/gi;
+  for (const match of raw.matchAll(namedRe)) {
+    const inner = match[2]?.trim();
+    if (inner) {
+      sources.push({ inner, name: match[1]?.trim() });
+    }
+  }
+
+  const genericRe = /<small_theater\s*>([\s\S]*?)<\/small_theater\s*>/gi;
+  for (const match of raw.matchAll(genericRe)) {
+    const inner = match[1]?.trim();
+    if (inner) {
+      sources.push({ inner });
+    }
+  }
+
+  return sources;
+}
+
+/**
+ * 预设 `[small_theater]`：`<content>` 或 `<small_theater:名>` 内的一个或多个 `<section><details>…</details></section>`
+ */
+export function parseSmallTheaters(messageContent: string): PresetSmallTheater[] {
+  const cleaned = stripThinkingBlocks(messageContent);
+  const sources = collectSmallTheaterSources(cleaned);
+  const theaters: PresetSmallTheater[] = [];
+  let index = 0;
+
+  const pushFromInner = (inner: string, name?: string) => {
+    const sections = extractSectionInners(inner);
+    const chunks = sections.length > 0 ? sections : [inner];
+    for (const chunk of chunks) {
+      const theater = sectionToTheater(chunk, index, name);
+      if (theater) {
+        theaters.push(theater);
+        index += 1;
+      }
+    }
+  };
+
+  for (const src of sources) {
+    pushFromInner(src.inner, src.name);
+  }
+
+  if (theaters.length > 0) {
+    return theaters;
+  }
+
+  // 回退：正文末尾独立的 section 小剧场（不在 maintext/option/sum 内）
+  const withoutNarrative = removeTagBlocks(cleaned, [...NARRATIVE_WRAPPER_TAGS, ...NON_NARRATIVE_BLOCK_TAGS]);
+  for (const inner of extractSectionInners(withoutNarrative)) {
+    const theater = sectionToTheater(inner, index);
+    if (theater) {
+      theaters.push(theater);
+      index += 1;
+    }
+  }
+
+  return theaters;
+}
+
+function removeSmallTheaterBlocks(raw: string): string {
+  let s = raw;
+  s = s.replace(/<content\s*>[\s\S]*?<\/content\s*>/gi, '');
+  s = s.replace(/<small_theater:[^>\s]+\s*>[\s\S]*?<\/small_theater:[^>\s]+\s*>/gi, '');
+  s = s.replace(/<small_theater\s*>[\s\S]*?<\/small_theater\s*>/gi, '');
+  return s;
 }
 
 function extractFirstNarrativeWrapper(raw: string): string {
@@ -423,15 +547,17 @@ function stripRemainingAngleTags(text: string): string {
  */
 export function parseAssistantStoryDisplay(messageContent: string): AssistantStoryDisplay {
   if (!messageContent?.trim()) {
-    return { main: '', puppy: null };
+    return { main: '', puppy: null, smallTheaters: [] };
   }
 
   const cleaned = stripThinkingBlocks(messageContent);
   const puppy = parsePuppyTheater(cleaned);
+  const smallTheaters = parseSmallTheaters(cleaned);
 
-  // 先从全文取 <maintext>（即使写在 <puppy> 内也能命中）；再回退到去 puppy 后的正文
+  // 先从全文取 <maintext>（即使写在 <puppy> 内也能命中）；再回退到去预设附加块后的正文
   const fromMaintextTag = parseMaintext(cleaned);
-  const withoutExtras = removeTagBlocks(cleaned, [...PRESET_EXTRA_DISPLAY_TAGS, ...NON_NARRATIVE_BLOCK_TAGS]);
+  let withoutExtras = removeTagBlocks(cleaned, [...PRESET_EXTRA_DISPLAY_TAGS, ...NON_NARRATIVE_BLOCK_TAGS]);
+  withoutExtras = removeSmallTheaterBlocks(withoutExtras);
 
   let main = '';
   if (fromMaintextTag) {
@@ -449,7 +575,7 @@ export function parseAssistantStoryDisplay(messageContent: string): AssistantSto
     }
   }
 
-  return { main, puppy };
+  return { main, puppy, smallTheaters };
 }
 
 /** 界面展示用：仅主叙事正文（兼容旧调用） */
@@ -460,6 +586,7 @@ export function parseStoryDisplayText(messageContent: string): string {
 export interface LoadFromAssistantResult {
   maintext: string;
   puppy: PresetPuppyTheater | null;
+  smallTheaters: PresetSmallTheater[];
   options: ParsedOption[];
   messageId?: number;
   raw?: string;
@@ -470,6 +597,7 @@ export interface StoryChatLine {
   role: 'user' | 'assistant';
   content: string;
   puppy?: PresetPuppyTheater;
+  smallTheaters?: PresetSmallTheater[];
 }
 
 /** 剧情区：仅最新一条 assistant 的主叙事（不含用户楼） */
@@ -496,6 +624,7 @@ function assistantRowFallbackDisplayText(raw: string): string {
   let s = stripThinkingBlocks(raw);
   s = s.replace(/<StatusPlaceHolderImpl\s*\/?>/gi, '');
   s = removeTagBlocks(s, [...PRESET_EXTRA_DISPLAY_TAGS, ...NON_NARRATIVE_BLOCK_TAGS]);
+  s = removeSmallTheaterBlocks(s);
   s = stripRemainingAngleTags(s);
   return normalizeStoryWhitespace(s);
 }
@@ -509,12 +638,12 @@ function rowToStoryLine(row: { message_id: number; role: string; message?: strin
   if (row.role !== 'assistant') {
     return null;
   }
-  const { main, puppy } = parseAssistantStoryDisplay(raw);
+  const { main, puppy, smallTheaters } = parseAssistantStoryDisplay(raw);
   let content = main || parseStoryDisplayText(raw);
   if (!content) {
     content = assistantRowFallbackDisplayText(raw);
   }
-  if (!content && !puppy) {
+  if (!content && !puppy && smallTheaters.length === 0) {
     return null;
   }
   return {
@@ -522,6 +651,7 @@ function rowToStoryLine(row: { message_id: number; role: string; message?: strin
     role: 'assistant',
     content,
     puppy: puppy ?? undefined,
+    smallTheaters: smallTheaters.length > 0 ? smallTheaters : undefined,
   };
 }
 
@@ -532,12 +662,12 @@ export function loadFromLatestAssistantMessage(): LoadFromAssistantResult {
   try {
     const lastId = getLastMessageId();
     if (lastId < 0) {
-      return { maintext: '', options: [] };
+      return { maintext: '', options: [], smallTheaters: [] };
     }
 
     const assistants = getChatMessages(`0-${lastId}`, { role: 'assistant' });
     if (!assistants.length) {
-      return { maintext: '', options: [] };
+      return { maintext: '', options: [], smallTheaters: [] };
     }
 
     const latest = assistants[assistants.length - 1];
@@ -547,12 +677,13 @@ export function loadFromLatestAssistantMessage(): LoadFromAssistantResult {
     return {
       maintext: display.main,
       puppy: display.puppy,
+      smallTheaters: display.smallTheaters,
       options: parseOptions(messageContent),
       messageId: latest.message_id,
       raw: messageContent,
     };
   } catch (e) {
     console.warn('[messageParser] loadFromLatestAssistantMessage:', e);
-    return { maintext: '', puppy: null, options: [] };
+    return { maintext: '', puppy: null, smallTheaters: [], options: [] };
   }
 }

@@ -31,12 +31,14 @@ export function useAssistantStory() {
   const [parsedOptions, setParsedOptions] = useState<ParsedOption[]>([]);
   const [sourceMessageId, setSourceMessageId] = useState<number | undefined>();
   const [latestPuppy, setLatestPuppy] = useState<StoryChatLine['puppy']>();
+  const [latestSmallTheaters, setLatestSmallTheaters] = useState<StoryChatLine['smallTheaters']>([]);
   const [storyLines, setStoryLines] = useState<StoryChatLine[]>([]);
 
   const refresh = useCallback(() => {
     const r = loadFromLatestAssistantMessage();
     setMaintext(r.maintext);
     setLatestPuppy(r.puppy ?? undefined);
+    setLatestSmallTheaters(r.smallTheaters);
     setParsedOptions(r.options);
     setSourceMessageId(r.messageId);
     setStoryLines(loadRecentStoryChatLines());
@@ -60,5 +62,5 @@ export function useAssistantStory() {
     [parsedOptions],
   );
 
-  return { maintext, actionsFromParse, sourceMessageId, latestPuppy, storyLines, refresh };
+  return { maintext, actionsFromParse, sourceMessageId, latestPuppy, latestSmallTheaters, storyLines, refresh };
 }

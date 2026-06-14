@@ -262,19 +262,20 @@ export interface PresetPuppyTheater {
   body: string;
 }
 
+/** 预设 `[small_theater]` / `<content>` 内 `<section>` 小剧场（HTML 原样渲染） */
+export interface PresetSmallTheater {
+  id: string;
+  name?: string;
+  title: string;
+  html: string;
+}
+
 export interface ChatLine {
   id: string;
   role: 'assistant' | 'user';
   content: string;
   puppy?: PresetPuppyTheater;
-}
-
-export function statToChatLines(s: StatData): ChatLine[] {
-  return s.界面对话.map((m, i) => ({
-    id: `line-${i}`,
-    role: m.角色 === 'ai' ? 'assistant' : 'user',
-    content: m.文本,
-  }));
+  smallTheaters?: PresetSmallTheater[];
 }
 
 export function statToGameUi(s: StatData) {
@@ -290,7 +291,6 @@ export function statToGameUi(s: StatData) {
     seasonInfo: statToSeasonInfo(s),
     dungeons: statToDungeons(s),
     leaderboard: statToLeaderboard(s),
-    chatLines: statToChatLines(s),
   };
 }
 

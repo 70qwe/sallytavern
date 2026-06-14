@@ -200,14 +200,6 @@ export const Schema = z
         }),
       )
       .prefault({}),
-    界面对话: z
-      .array(
-        z.object({
-          角色: z.enum(['ai', 'player']),
-          文本: z.string(),
-        }),
-      )
-      .prefault([]),
   })
   .prefault({});
 

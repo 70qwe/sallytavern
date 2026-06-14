@@ -530,29 +530,6 @@
           }
         }
       }
-    },
-    "界面对话": {
-      "default": [],
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "角色": {
-            "type": "string",
-            "enum": [
-              "ai",
-              "player"
-            ]
-          },
-          "文本": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "角色",
-          "文本"
-        ]
-      }
     }
   },
   "$defs": {

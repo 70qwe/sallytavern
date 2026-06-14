@@ -48,6 +48,7 @@ export default function App() {
     actionsFromParse,
     sourceMessageId,
     latestPuppy,
+    latestSmallTheaters,
     storyLines,
     refresh: refreshStory,
   } = useAssistantStory();
@@ -77,18 +78,19 @@ export default function App() {
       return fromStory;
     }
     const t = maintext.trim();
-    if (t || latestPuppy) {
+    if (t || latestPuppy || (latestSmallTheaters?.length ?? 0) > 0) {
       return [
         {
           id: `assistant-maintext-${sourceMessageId ?? 'current'}`,
           role: 'assistant' as const,
           content: t,
           puppy: latestPuppy,
+          smallTheaters: latestSmallTheaters,
         },
       ];
     }
     return [];
-  }, [maintext, sourceMessageId, latestPuppy, storyLines]);
+  }, [maintext, sourceMessageId, latestPuppy, latestSmallTheaters, storyLines]);
 
   /** 行动选项仅来自主 API 消息内 &lt;option&gt;（变量表已不含「下一步行动」） */
   const actionButtons: ActionOption[] = useMemo(() => actionsFromParse, [actionsFromParse]);
