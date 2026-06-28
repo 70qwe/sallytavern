@@ -524,21 +524,68 @@
       }
     },
     "排行榜": {
-      "default": {},
-      "type": "object",
-      "propertyNames": {
-        "type": "string"
+      "default": {
+        "杀戮榜": {
+          "地区": {},
+          "全球": {}
+        },
+        "财富榜": {
+          "地区": {},
+          "全球": {}
+        },
+        "总榜": {}
       },
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "排名": {
-            "default": 1,
-            "type": "number"
+      "type": "object",
+      "properties": {
+        "杀戮榜": {
+          "default": {
+            "地区": {},
+            "全球": {}
           },
-          "上榜人昵称": {
-            "default": "",
+          "type": "object",
+          "properties": {
+            "地区": {
+              "$ref": "#/$defs/__schema4"
+            },
+            "全球": {
+              "$ref": "#/$defs/__schema4"
+            }
+          }
+        },
+        "财富榜": {
+          "default": {
+            "地区": {},
+            "全球": {}
+          },
+          "type": "object",
+          "properties": {
+            "地区": {
+              "$ref": "#/$defs/__schema5"
+            },
+            "全球": {
+              "$ref": "#/$defs/__schema5"
+            }
+          }
+        },
+        "总榜": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
             "type": "string"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "排名": {
+                "default": 1,
+                "type": "number"
+              },
+              "昵称": {
+                "default": "匿名",
+                "type": "string"
+              }
+            }
           }
         }
       }
@@ -626,6 +673,56 @@
         "上限": {
           "default": 30,
           "type": "number"
+        }
+      }
+    },
+    "__schema4": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "排名": {
+            "default": 1,
+            "type": "number"
+          },
+          "昵称": {
+            "default": "匿名",
+            "type": "string"
+          },
+          "杀怪数量": {
+            "default": 0,
+            "type": "number"
+          }
+        }
+      }
+    },
+    "__schema5": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "排名": {
+            "default": 1,
+            "type": "number"
+          },
+          "昵称": {
+            "default": "匿名",
+            "type": "string"
+          },
+          "SP": {
+            "default": 0,
+            "type": "number"
+          }
         }
       }
     }

@@ -72,6 +72,33 @@ const SlaveEntry = z
   })
   .prefault({});
 
+const LeaderboardRankEntry = z
+  .object({
+    排名: z.coerce.number().transform(v => _.clamp(v, 1, 10)).prefault(1),
+    昵称: z.string().prefault('匿名'),
+  })
+  .prefault({});
+
+const KillLeaderboardEntry = z
+  .object({
+    排名: z.coerce.number().transform(v => _.clamp(v, 1, 10)).prefault(1),
+    昵称: z.string().prefault('匿名'),
+    杀怪数量: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
+  })
+  .prefault({});
+
+const WealthLeaderboardEntry = z
+  .object({
+    排名: z.coerce.number().transform(v => _.clamp(v, 1, 10)).prefault(1),
+    昵称: z.string().prefault('匿名'),
+    SP: z.coerce.number().transform(v => _.clamp(v, 0, 999999999)).prefault(0),
+  })
+  .prefault({});
+
+const Top10KillBoard = z.record(z.string(), KillLeaderboardEntry).prefault({});
+const Top10WealthBoard = z.record(z.string(), WealthLeaderboardEntry).prefault({});
+const Top10OverallBoard = z.record(z.string(), LeaderboardRankEntry).prefault({});
+
 export const Schema = z
   .object({
     世界: z
@@ -195,14 +222,22 @@ export const Schema = z
       )
       .prefault({}),
     排行榜: z
-      .record(
-        z.string(),
-        z.object({
-          排名: z.coerce.number().transform(v => _.clamp(v, 1, 99999)).prefault(1),
-          上榜人昵称: z.string().prefault(''),
-        }),
-      )
-      .prefault({}),
+      .object({
+        杀戮榜: z
+          .object({
+            地区: Top10KillBoard,
+            全球: Top10KillBoard,
+          })
+          .prefault({ 地区: {}, 全球: {} }),
+        财富榜: z
+          .object({
+            地区: Top10WealthBoard,
+            全球: Top10WealthBoard,
+          })
+          .prefault({ 地区: {}, 全球: {} }),
+        总榜: Top10OverallBoard,
+      })
+      .prefault({ 杀戮榜: { 地区: {}, 全球: {} }, 财富榜: { 地区: {}, 全球: {} }, 总榜: {} }),
   })
   .prefault({});
 

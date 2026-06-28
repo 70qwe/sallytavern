@@ -146,5 +146,18 @@ export interface LeaderboardEntry {
   rank: number;
   nickname: string;
   isAnonymous: boolean;
-  score?: number;
+}
+
+export interface KillLeaderboardEntry extends LeaderboardEntry {
+  killCount: number;
+}
+
+export interface WealthLeaderboardEntry extends LeaderboardEntry {
+  sp: number;
+}
+
+export interface Leaderboards {
+  kill: { regional: KillLeaderboardEntry[]; global: KillLeaderboardEntry[] };
+  wealth: { regional: WealthLeaderboardEntry[]; global: WealthLeaderboardEntry[] };
+  overall: LeaderboardEntry[];
 }

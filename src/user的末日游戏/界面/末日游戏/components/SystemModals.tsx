@@ -516,23 +516,101 @@ function DungeonsBody({ ui }: { ui: GameUi }) {
 }
 
 function LeaderboardBody({ ui }: { ui: GameUi }) {
+  const [board, setBoard] = useState<'kill' | 'wealth' | 'overall'>('kill');
+  const [scope, setScope] = useState<'regional' | 'global'>('regional');
   const { leaderboard } = ui;
-  if (leaderboard.length === 0) {
+
+  const killRows = scope === 'regional' ? leaderboard.kill.regional : leaderboard.kill.global;
+  const wealthRows = scope === 'regional' ? leaderboard.wealth.regional : leaderboard.wealth.global;
+  const overallRows = leaderboard.overall;
+
+  const activeRows =
+    board === 'kill' ? killRows : board === 'wealth' ? wealthRows : overallRows;
+
+  if (activeRows.length === 0) {
     return <Empty hint="排行榜为空" />;
   }
+
   return (
-    <ol className="space-y-2">
-      {leaderboard.map(e => (
-        <li
-          key={`${e.rank}-${e.nickname}`}
-          className="dossier-card flex items-center justify-between rounded-lg px-3 py-2"
-        >
-          <span className="font-heading w-10 text-game-accent">#{e.rank}</span>
-          <span className="flex-1">{e.nickname}</span>
-          {e.score != null && <span className="text-xs text-gray-400">{e.score}</span>}
-        </li>
-      ))}
-    </ol>
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ['kill', '杀戮榜'],
+            ['wealth', '财富榜'],
+            ['overall', '总榜'],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={`button-retro rounded-lg px-3 py-1 text-xs ${board === id ? 'ring-2 ring-game-primary' : ''}`}
+            onClick={() => setBoard(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {(board === 'kill' || board === 'wealth') && (
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              ['regional', '地区'],
+              ['global', '全球'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={`button-retro rounded-lg px-3 py-1 text-xs ${scope === id ? 'ring-2 ring-game-accent' : ''}`}
+              onClick={() => setScope(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+      <ol className="space-y-2 font-mono text-sm">
+        {board === 'kill' &&
+          (activeRows as typeof killRows).map(e => (
+            <li
+              key={`kill-${e.rank}-${e.nickname}`}
+              className="dossier-card flex items-baseline gap-3 rounded-lg px-3 py-2"
+            >
+              <span className="w-12 shrink-0 text-game-accent">No.{e.rank}</span>
+              <span className={`min-w-0 flex-1 truncate ${e.isAnonymous ? 'text-gray-400' : ''}`}>
+                {e.nickname}
+              </span>
+              <span className="shrink-0 text-xs text-gray-500">（{e.killCount}）</span>
+            </li>
+          ))}
+        {board === 'wealth' &&
+          (activeRows as typeof wealthRows).map(e => (
+            <li
+              key={`wealth-${e.rank}-${e.nickname}`}
+              className="dossier-card flex items-baseline gap-3 rounded-lg px-3 py-2"
+            >
+              <span className="w-12 shrink-0 text-game-accent">No.{e.rank}</span>
+              <span className={`min-w-0 flex-1 truncate ${e.isAnonymous ? 'text-gray-400' : ''}`}>
+                {e.nickname}
+              </span>
+              <span className="shrink-0 text-xs text-gray-500">（{e.sp}）SP</span>
+            </li>
+          ))}
+        {board === 'overall' &&
+          overallRows.map(e => (
+            <li
+              key={`overall-${e.rank}-${e.nickname}`}
+              className="dossier-card flex items-baseline gap-3 rounded-lg px-3 py-2"
+            >
+              <span className="w-12 shrink-0 text-game-accent">No.{e.rank}</span>
+              <span className={`min-w-0 flex-1 truncate ${e.isAnonymous ? 'text-gray-400' : ''}`}>
+                {e.nickname}
+              </span>
+            </li>
+          ))}
+      </ol>
+    </div>
   );
 }
 

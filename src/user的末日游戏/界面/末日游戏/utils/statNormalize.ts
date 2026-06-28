@@ -127,6 +127,84 @@ export function normalize狩猎名单Field(statData: Record<string, unknown>): {
   return { 进行中: active, 已奴隶: slaves };
 }
 
+function makeDefaultTop10(extra: Record<string, unknown> = {}): Record<string, unknown> {
+  const board: Record<string, unknown> = {};
+  for (let rank = 1; rank <= 10; rank++) {
+    board[`rank_${rank}`] = { 排名: rank, 昵称: '匿名', ...extra };
+  }
+  return board;
+}
+
+function normalizeLeaderboardEntry(raw: unknown): Record<string, unknown> | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return null;
+  }
+  const o = raw as Record<string, unknown>;
+  const rank = Number(o.排名 ?? o.rank ?? 0);
+  const nickname = String(o.昵称 ?? o.上榜人昵称 ?? o.nickname ?? '匿名').trim() || '匿名';
+  const out: Record<string, unknown> = { 排名: rank, 昵称: nickname };
+  if (o.杀怪数量 !== undefined || o.killCount !== undefined) {
+    out.杀怪数量 = Number(o.杀怪数量 ?? o.killCount ?? 0) || 0;
+  }
+  if (o.SP !== undefined || o.sp !== undefined) {
+    out.SP = Number(o.SP ?? o.sp ?? 0) || 0;
+  }
+  return rank >= 1 && rank <= 10 ? out : null;
+}
+
+function normalizeTop10Board(raw: unknown, extraKeys: string[]): Record<string, unknown> {
+  const entries = recordFromLoose(raw);
+  const board: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(entries)) {
+    const entry = normalizeLeaderboardEntry(value);
+    if (entry) {
+      for (const k of extraKeys) {
+        if (entry[k] === undefined) {
+          entry[k] = 0;
+        }
+      }
+      board[key] = entry;
+    }
+  }
+  return Object.keys(board).length > 0 ? board : makeDefaultTop10(Object.fromEntries(extraKeys.map(k => [k, 0])));
+}
+
+/** 将旧版扁平排行榜或松散写入规整为五张榜单结构 */
+export function normalize排行榜Field(statData: Record<string, unknown>): Record<string, unknown> {
+  const raw = statData.排行榜;
+  const root = asObject(raw);
+  if (!root) {
+    return {
+      杀戮榜: { 地区: makeDefaultTop10({ 杀怪数量: 0 }), 全球: makeDefaultTop10({ 杀怪数量: 0 }) },
+      财富榜: { 地区: makeDefaultTop10({ SP: 0 }), 全球: makeDefaultTop10({ SP: 0 }) },
+      总榜: makeDefaultTop10(),
+    };
+  }
+
+  if (root.杀戮榜 || root.财富榜 || root.总榜) {
+    const killRoot = asObject(root.杀戮榜) ?? {};
+    const wealthRoot = asObject(root.财富榜) ?? {};
+    return {
+      杀戮榜: {
+        地区: normalizeTop10Board(killRoot.地区, ['杀怪数量']),
+        全球: normalizeTop10Board(killRoot.全球, ['杀怪数量']),
+      },
+      财富榜: {
+        地区: normalizeTop10Board(wealthRoot.地区, ['SP']),
+        全球: normalizeTop10Board(wealthRoot.全球, ['SP']),
+      },
+      总榜: normalizeTop10Board(root.总榜, []),
+    };
+  }
+
+  const legacyOverall = normalizeTop10Board(root, []);
+  return {
+    杀戮榜: { 地区: makeDefaultTop10({ 杀怪数量: 0 }), 全球: makeDefaultTop10({ 杀怪数量: 0 }) },
+    财富榜: { 地区: makeDefaultTop10({ SP: 0 }), 全球: makeDefaultTop10({ SP: 0 }) },
+    总榜: legacyOverall,
+  };
+}
+
 /** 在 Schema.parse 前规整 stat_data，避免 AI 写入数组等形态导致整表解析失败 */
 export function normalizeStatDataBeforeParse(raw: unknown): unknown {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
@@ -135,5 +213,6 @@ export function normalizeStatDataBeforeParse(raw: unknown): unknown {
   const stat = { ...(raw as Record<string, unknown>) };
   stat.物品栏 = normalize物品栏Field(stat);
   stat.狩猎名单 = normalize狩猎名单Field(stat);
+  stat.排行榜 = normalize排行榜Field(stat);
   return stat;
 }

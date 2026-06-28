@@ -1,10 +1,12 @@
 import type { Schema as StatData } from '../../schema';
 import type {
     Dungeon,
-    ForumPost, HuntingList, Inventory, LeaderboardEntry, PlayerInfo, PlayerTradeItem,
+    ForumPost, HuntingList, Inventory, KillLeaderboardEntry, LeaderboardEntry, Leaderboards,
+    PlayerInfo, PlayerTradeItem,
     PrivateMessage,
     Rating, SeasonInfo,
     ShopItem,
+    WealthLeaderboardEntry,
     WorldInfo
 } from './types';
 import { mapClothing } from './clothing';
@@ -249,15 +251,65 @@ export function statToDungeons(s: StatData): Dungeon[] {
   }));
 }
 
-export function statToLeaderboard(s: StatData): LeaderboardEntry[] {
-  return Object.values(s.排行榜)
-    .map(r => ({
-      rank: r.排名,
-      nickname: r.上榜人昵称,
-      isAnonymous: false,
-      score: r.排名,
-    }))
+function mapRankNickname(nickname: string): { nickname: string; isAnonymous: boolean } {
+  const n = nickname.trim() || '匿名';
+  return { nickname: n, isAnonymous: n === '匿名' };
+}
+
+function mapKillBoard(
+  board: Record<string, { 排名: number; 昵称: string; 杀怪数量: number }>,
+): KillLeaderboardEntry[] {
+  return Object.values(board)
+    .map(r => {
+      const { nickname, isAnonymous } = mapRankNickname(r.昵称);
+      return {
+        rank: r.排名,
+        nickname,
+        isAnonymous,
+        killCount: r.杀怪数量,
+      };
+    })
     .sort((a, b) => a.rank - b.rank);
+}
+
+function mapWealthBoard(
+  board: Record<string, { 排名: number; 昵称: string; SP: number }>,
+): WealthLeaderboardEntry[] {
+  return Object.values(board)
+    .map(r => {
+      const { nickname, isAnonymous } = mapRankNickname(r.昵称);
+      return {
+        rank: r.排名,
+        nickname,
+        isAnonymous,
+        sp: r.SP,
+      };
+    })
+    .sort((a, b) => a.rank - b.rank);
+}
+
+function mapOverallBoard(board: Record<string, { 排名: number; 昵称: string }>): LeaderboardEntry[] {
+  return Object.values(board)
+    .map(r => {
+      const { nickname, isAnonymous } = mapRankNickname(r.昵称);
+      return { rank: r.排名, nickname, isAnonymous };
+    })
+    .sort((a, b) => a.rank - b.rank);
+}
+
+export function statToLeaderboards(s: StatData): Leaderboards {
+  const lb = s.排行榜;
+  return {
+    kill: {
+      regional: mapKillBoard(lb.杀戮榜.地区),
+      global: mapKillBoard(lb.杀戮榜.全球),
+    },
+    wealth: {
+      regional: mapWealthBoard(lb.财富榜.地区),
+      global: mapWealthBoard(lb.财富榜.全球),
+    },
+    overall: mapOverallBoard(lb.总榜),
+  };
 }
 
 /** 预设 `<puppy>` 小剧场（与角色卡世界书无关） */
@@ -294,7 +346,7 @@ export function statToGameUi(s: StatData) {
     playerTrades: statToPlayerTrades(s),
     seasonInfo: statToSeasonInfo(s),
     dungeons: statToDungeons(s),
-    leaderboard: statToLeaderboard(s),
+    leaderboard: statToLeaderboards(s),
   };
 }
 
