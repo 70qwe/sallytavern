@@ -236,21 +236,20 @@
                 "type": "number"
               },
               "精液质量": {
-                "default": "C",
-                "$ref": "#/$defs/__schema1"
+                "$ref": "#/$defs/__schema3"
               },
               "天赋": {
                 "default": "",
                 "type": "string"
               },
               "力量": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "体质": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "敏捷": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "沦陷度": {
                 "default": 0,
@@ -312,21 +311,20 @@
                 "type": "number"
               },
               "精液质量": {
-                "default": "C",
-                "$ref": "#/$defs/__schema1"
+                "$ref": "#/$defs/__schema3"
               },
               "天赋": {
                 "default": "",
                 "type": "string"
               },
               "力量": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "体质": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "敏捷": {
-                "$ref": "#/$defs/__schema3"
+                "$ref": "#/$defs/__schema4"
               },
               "当前位置": {
                 "default": "",
@@ -545,10 +543,10 @@
           "type": "object",
           "properties": {
             "地区": {
-              "$ref": "#/$defs/__schema4"
+              "$ref": "#/$defs/__schema5"
             },
             "全球": {
-              "$ref": "#/$defs/__schema4"
+              "$ref": "#/$defs/__schema5"
             }
           }
         },
@@ -560,10 +558,10 @@
           "type": "object",
           "properties": {
             "地区": {
-              "$ref": "#/$defs/__schema5"
+              "$ref": "#/$defs/__schema6"
             },
             "全球": {
-              "$ref": "#/$defs/__schema5"
+              "$ref": "#/$defs/__schema6"
             }
           }
         },
@@ -663,6 +661,10 @@
       }
     },
     "__schema3": {
+      "default": "C",
+      "type": "string"
+    },
+    "__schema4": {
       "default": {},
       "type": "object",
       "properties": {
@@ -676,7 +678,7 @@
         }
       }
     },
-    "__schema4": {
+    "__schema5": {
       "default": {},
       "type": "object",
       "propertyNames": {
@@ -701,7 +703,7 @@
         }
       }
     },
-    "__schema5": {
+    "__schema6": {
       "default": {},
       "type": "object",
       "propertyNames": {

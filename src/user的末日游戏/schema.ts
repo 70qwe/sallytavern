@@ -1,5 +1,17 @@
 const Rarity = z.enum(['E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']);
 
+/** 精液质量：E~SSS 基准，允许带 ± 后缀（如 A-、A+）表示档内浮动；非法输入归一化为 C */
+const SemenQuality = z
+  .string()
+  .transform(v => {
+    const matched = String(v)
+      .trim()
+      .toUpperCase()
+      .match(/^(SSS|SS|S|A|B|C|D|E)([+-]?)$/);
+    return matched ? matched[1] + matched[2] : 'C';
+  })
+  .prefault('C');
+
 const StatPair = z
   .object({
     当前: z.coerce.number().transform(v => _.clamp(v, 0, 9999)).prefault(10),
@@ -38,7 +50,7 @@ const HuntActiveEntry = z
     污染值: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(0),
     身份: z.string().prefault(''),
     年龄: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(20),
-    精液质量: Rarity.prefault('C'),
+    精液质量: SemenQuality,
     天赋: z.string().prefault(''),
     力量: StatPair,
     体质: StatPair,
@@ -60,7 +72,7 @@ const SlaveEntry = z
     污染值: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(0),
     身份: z.string().prefault(''),
     年龄: z.coerce.number().transform(v => _.clamp(v, 0, 999)).prefault(20),
-    精液质量: Rarity.prefault('C'),
+    精液质量: SemenQuality,
     天赋: z.string().prefault(''),
     力量: StatPair,
     体质: StatPair,
