@@ -1,0 +1,200 @@
+# yaml-language-server: $schema=https://testingcf.jsdelivr.net/gh/StageDog/tavern_sync/dist/schema/character.zh.json
+头像: null
+版本: 1.0.0
+作者: ''
+备注: |-
+  Tavern Helper 角色卡《超级网黄系统》。
+  本卡与《user的末日游戏》完全独立，仅参考最基础的角色卡示例结构。
+  变量分为世界信息、空间信息、视频信息三大模块，结构定义见 schema.ts。
+
+角色描述: |-
+  《超级网黄系统》围绕 {{user}} 的现实处境、线上空间账号经营与视频发布数据展开。
+  变量记录当前日期时间地点、场景人物与重要物品、财富资产、空间人气粉丝打赏，以及每条视频的标题、简介、数据、留言、打赏和内容概要。
+
+锚点:
+  - &分隔符
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    内容: ''
+
+世界书名称: 与角色卡名称相同
+条目:
+  - 文件夹: 变量
+    条目:
+      - 名称: ===变量开始===
+        <<: *分隔符
+
+      - 名称: '[initvar]变量初始化勿开'
+        启用: false
+        激活策略:
+          类型: 蓝灯
+        插入位置:
+          类型: 角色定义之前
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/initvar
+
+      - 名称: 变量列表
+        启用: true
+        激活策略:
+          类型: 蓝灯
+        插入位置:
+          类型: 指定深度
+          角色: 系统
+          深度: 0
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量列表
+
+      - 名称: '[mvu_update]变量更新规则'
+        启用: true
+        激活策略:
+          类型: 蓝灯
+        插入位置:
+          类型: 指定深度
+          角色: 系统
+          深度: 0
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量更新规则
+
+      - 名称: '[mvu_update]变量输出格式'
+        启用: true
+        激活策略:
+          类型: 蓝灯
+        插入位置:
+          类型: 指定深度
+          角色: 系统
+          深度: 0
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量输出格式
+
+      - 名称: ===变量结束===
+        <<: *分隔符
+
+  - 文件夹: 状态栏
+    条目:
+      - 名称: ===状态栏开始===
+        <<: *分隔符
+
+      - 名称: '[状态栏]状态栏输出规则'
+        启用: true
+        激活策略:
+          类型: 蓝灯
+        插入位置:
+          类型: 指定深度
+          角色: 系统
+          深度: 0
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/状态栏/状态栏输出规则
+
+      - 名称: ===状态栏结束===
+        <<: *分隔符
+
+扩展字段:
+  正则:
+    - 正则名称: '[不发送]去除变量更新'
+      id: 9b1d2c3e-4a5f-6b7c-8d9e-0a1b2c3d4e5f
+      启用: true
+      查找表达式: /<update(?:variable)?>(?:(?!.*<\/update(?:variable)?>).*$|.*<\/update(?:variable)?>)/gsi
+      内容: ''
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: false
+        仅格式提示词: true
+      最大深度: 3
+
+    - 正则名称: '[折叠]变量更新中'
+      id: a2c3d4e5-6b7c-8d9e-0a1b-2c3d4e5f6a7b
+      启用: true
+      查找表达式: /<update(?:variable)?>(?!.*<\/update(?:variable)?>)\s*(.*)\s*$/gsi
+      内容: |-
+
+        <details>
+        <summary>变量更新中{{random::.::..::...}}</summary>
+        $1
+        </details>
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+    - 正则名称: '[折叠]完整变量更新'
+      id: b3d4e5f6-7c8d-9e0a-1b2c-3d4e5f6a7b8c
+      启用: true
+      查找表达式: /<update(?:variable)?>\s*(.*)\s*<\/update(?:variable)?>/gsi
+      内容: |-
+
+        <details>
+        <summary>变量更新情况</summary>
+        $1
+        </details>
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+    - 正则名称: '[状态栏]挂载状态栏'
+      id: e6f7a8b9-0c1d-2e3f-4a5b-6c7d8e9f0a1b
+      启用: true
+      查找表达式: /<StatusPlaceHolderImpl\s*\/?>/gi
+      内容: |-
+        ```
+        <body>
+        <script>
+        (function () {
+          var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/超级网黄系统/界面/状态栏/';
+          $.get(u + 'index.html').done(function (html) {
+            var style = (html.match(/<style[\s\S]*?<\/style>/gi) || []).join('');
+            $('body').html(style + '<div id="app"></div>');
+            $.getScript(u + 'index.js');
+          });
+        })();
+        </script>
+        </body>
+        ```
+      来源:
+        用户输入: false
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+  酒馆助手:
+    脚本库:
+      - 名称: mvu
+        id: c4e5f6a7-8d9e-0a1b-2c3d-4e5f6a7b8c9d
+        启用: true
+        类型: 脚本
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/超级网黄系统/脚本/MVU/index.js';
+
+      - 名称: 变量结构设计
+        id: d5f6a7b8-9e0a-1b2c-3d4e-5f6a7b8c9d0e
+        启用: false
+        类型: 脚本
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/超级网黄系统/脚本/MVU/index.js';

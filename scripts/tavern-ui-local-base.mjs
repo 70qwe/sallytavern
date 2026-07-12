@@ -6,7 +6,7 @@
 import { spawnSync } from 'node:child_process';
 import process from 'node:process';
 
-const origin = process.env.TAVERN_HELPER_LIVE_ORIGIN || 'http://127.0.0.1:5500';
+const origin = process.env.TAVERN_HELPER_LIVE_ORIGIN || 'http://localhost:5501';
 const childEnv = { ...process.env, TAVERN_HELPER_LIVE_ORIGIN: origin };
 
 console.info(`[build:local] TAVERN_HELPER_LIVE_ORIGIN=${origin} (index.html <base> uses this origin)`);

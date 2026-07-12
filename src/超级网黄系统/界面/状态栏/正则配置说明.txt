@@ -1,0 +1,21 @@
+【状态栏正则配置 — 请逐项核对】
+
+一、查找正则表达式
+/<StatusPlaceHolderImpl\s*\/?>/gi
+
+二、替换为
+打开同目录「正则替换内容.txt」，全选复制粘贴（已从 GitHub jsdelivr 加载）。
+
+三、作用范围
+☑ AI 输出
+☑ 仅影响显示（render）
+
+四、线上地址（index.yaml / 正则替换内容.txt 已配置）
+https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/超级网黄系统/界面/状态栏/
+
+五、本地开发（可选，改回 localhost:5501 后使用）
+终端1：pnpm watch
+终端2：npx http-server . -p 5501 --cors -c-1
+
+六、改完后
+保存正则 → 酒馆 Ctrl+F5 强刷 → 楼层「重新渲染」

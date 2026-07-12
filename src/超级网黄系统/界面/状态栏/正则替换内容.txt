@@ -1,0 +1,14 @@
+```
+<body>
+<script>
+(function () {
+  var u = 'https://testingcf.jsdelivr.net/gh/70qwe/sallytavern@main/dist/超级网黄系统/界面/状态栏/';
+  $.get(u + 'index.html').done(function (html) {
+    var style = (html.match(/<style[\s\S]*?<\/style>/gi) || []).join('');
+    $('body').html(style + '<div id="app"></div>');
+    $.getScript(u + 'index.js');
+  });
+})();
+</script>
+</body>
+```

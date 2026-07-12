@@ -193,7 +193,10 @@ function tavern_sync(compiler: webpack.Compiler) {
 /** 与酒馆楼层「正则替换 + $('body').load(url)」兼容：须为普通脚本（非 type=module），且勿使用 CDN 的 ESM external。 */
 function is_jquery_load_compatible_ui(entry: Entry): boolean {
   const norm = entry.script.replace(/\\/g, '/');
-  return norm.includes('user的末日游戏/界面/末日游戏/index.tsx');
+  return (
+    norm.includes('user的末日游戏/界面/末日游戏/index.tsx') ||
+    norm.includes('超级网黄系统/界面/状态栏/index.ts')
+  );
 }
 
 /**
@@ -243,25 +246,28 @@ function pack_jquery_load_ui_html_for_cross_origin_load(): webpack.WebpackPlugin
           html = html.replace(style_match[0], '');
           html = html.replace(/(<body[^>]*>)/i, `$1${style_match[0]}`);
         }
+        // 跨域 load 不会执行 html 内 script；由正则回调 getScript 加载，去掉避免浏览器误从错误端口请求
+        html = html.replace(/<script[^>]+src=["']index\.js[^"']*["'][^>]*>\s*<\/script>/gi, '');
         fs.writeFileSync(html_path, html);
       });
     },
   };
 }
 
-function tavern_embed_base_href(is_production: boolean): string {
+function tavern_embed_base_href(entry: Entry, is_production: boolean): string {
+  const norm_dir = path.dirname(entry.script).replace(/\\/g, '/').replace(/^[^/]+\//, '');
   if (process.env.TAVERN_HELPER_BASE_HREF) {
     return process.env.TAVERN_HELPER_BASE_HREF.replace(/\/?$/, '/');
   }
   if (process.env.TAVERN_HELPER_LIVE_ORIGIN) {
     const origin = process.env.TAVERN_HELPER_LIVE_ORIGIN.replace(/\/$/, '');
-    return `${origin}/dist/user的末日游戏/界面/末日游戏/`;
+    return `${origin}/dist/${norm_dir}/`;
   }
-  if (is_production) {
+  if (is_production && norm_dir === 'user的末日游戏/界面/末日游戏') {
     return TAVERN_UI_DIST_CDN_BASE;
   }
-  const origin = 'http://localhost:5500'.replace(/\/$/, '');
-  return `${origin}/dist/user的末日游戏/界面/末日游戏/`;
+  const origin = 'http://localhost:5501'.replace(/\/$/, '');
+  return `${origin}/dist/${norm_dir}/`;
 }
 
 function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Configuration {
@@ -514,7 +520,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
               ? {
                   templateContent: () =>
                     _.template(fs.readFileSync(path.join(import.meta.dirname, entry.html!), 'utf8'))({
-                      BASE_HREF: tavern_embed_base_href(is_production_build),
+                      BASE_HREF: tavern_embed_base_href(entry, is_production_build),
                     }),
                 }
               : {

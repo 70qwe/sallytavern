@@ -59,6 +59,29 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         { deep: true },
       );
 
+      function syncFromTavern() {
+        const stat_data = _.get(getVariables(variable_option), 'stat_data', {});
+        const result = schema.safeParse(stat_data);
+        if (result.error) {
+          return;
+        }
+        if (!_.isEqual(data.value, result.data)) {
+          ignoreUpdates(() => {
+            data.value = result.data;
+          });
+        }
+      }
+
+      eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, syncFromTavern);
+      eventOn(tavern_events.MESSAGE_UPDATED, message_id => {
+        if (
+          variable_option.type === 'message' &&
+          message_id === getCurrentMessageId()
+        ) {
+          syncFromTavern();
+        }
+      });
+
       return { data };
     }),
   );

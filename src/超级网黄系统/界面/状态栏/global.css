@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* 梦幻薰衣草星夜配色 */
+  --sn-night-1: #4a3f6b; /* 夜空渐变深 */
+  --sn-night-2: #6052914d; /* 夜空渐变浅 */
+  --sn-glow: #b9a4ec; /* 主紫光晕 */
+
+  --sn-card: #f7f2ff; /* 卡片底 */
+  --sn-card-soft: #efe7fd; /* 次级卡片底 */
+  --sn-card-line: #e4d8fa; /* 描边/分隔 */
+
+  --sn-lav: #b9a4ec; /* 薰衣草 */
+  --sn-lav-deep: #9a82d8; /* 深薰衣草 */
+  --sn-pink: #f3b6dc; /* 樱粉 */
+  --sn-peri: #a9b6f2; /* 长春花蓝 */
+  --sn-gold: #ffd97a; /* 星光金 */
+  --sn-live: #ff7fa8; /* 直播粉 */
+
+  --sn-text: #4b3f6e; /* 主文字 */
+  --sn-text-soft: #9286b6; /* 次文字 */
+  --sn-text-faint: #b6abd1; /* 占位文字 */
+
+  --sn-radius-lg: 22px;
+  --sn-radius: 16px;
+  --sn-radius-sm: 11px;
+  --sn-shadow: 0 10px 26px rgba(74, 63, 107, 0.22);
+  --sn-shadow-soft: 0 4px 12px rgba(122, 104, 173, 0.18);
+
+  --sn-font:
+    'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Segoe UI Variable', 'Segoe UI', -apple-system, sans-serif;
+}
+
+/* 酒馆消息区可能隐藏 section；折叠区使用 sn-fold 避免与 Bootstrap .collapse 冲突 */
+.sn-sections {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.sn-sections .sn-fold {
+  display: block !important;
+}

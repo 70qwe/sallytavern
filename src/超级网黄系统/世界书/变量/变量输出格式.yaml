@@ -1,0 +1,39 @@
+---
+变量输出格式:
+  rule:
+    - you must output the update analysis and the actual update commands at once in the end of the next reply
+    - the update commands works like the **JSON Patch (RFC 6902)** standard, must be a valid JSON array containing operation objects, but supports the following operations instead:
+      - replace: replace the value of existing paths
+      - delta: update the value of existing number paths by a delta value
+      - insert: insert new items into an object or array (using `-` as array index intends appending to the end)
+      - remove
+      - move
+    - replace 只能更新**已存在**的路径；insert 用于对象/数组中的**新键**
+    - 主角.人物衣着 下 8 个槽位已在 initvar 预置为空字符串，穿衣/换装一律用 replace，例如 `/世界信息/主角/人物衣着/上衣`
+    - 首回合开场白：若主角.人物衣着八槽仍皆空，本回合 JSONPatch 必须 replace 全部 8 槽（至少上衣/下装/内衣裤/袜子/鞋子有描述；未穿戴的头部/外套/手持物可 ""）
+    - 新人物出场必须用 insert，path 为 `/世界信息/人物/${人物id}`，value 为完整人物对象（含 姓名、与user关系、人物状态、人物衣着 全部 8 槽）
+    - 新环境物品必须用 insert `/世界信息/环境重要物品/${物品id}`，且仅限当前地点可触摸的现实实体；系统界面/UI/任务面板/虚拟浮窗禁止写入
+    - 主角.超能力槽 已预置槽位一/二/三，系统奖励能力时用 replace，例如 `/世界信息/主角/超能力槽/槽位一`
+    - 非首回合：未变化的衣着槽可不在 Patch 中出现；若本回合已 replace 任一衣着槽，须自检内衣裤/袜子/鞋子是否与上下装一致
+  format: |-
+    <UpdateVariable>
+    <Analysis>$(IN ENGLISH, no more than 80 words)
+    - ${calculate time passed: ...}
+    - ${decide whether dramatic updates are allowed as it's in a special case or the time passed is more than usual: yes/no}
+    - ${environment items: only physical objects at current location? any UI/system panel wrongly included? yes/no}
+    - ${protagonist clothing: opening or outfit change? core slots (top/bottom/underwear/socks/shoes) all covered? yes/no}
+    - ${analyze every variable based on its corresponding `check`, according only to current reply instead of previous plots: ...}
+    </Analysis>
+    <JSONPatch>
+    [
+      { "op": "replace", "path": "${/path/to/variable}", "value": "${new_value}" },
+      { "op": "delta", "path": "${/path/to/number/variable}", "value": "${positive_or_negative_delta}" },
+      { "op": "insert", "path": "${/path/to/object/new_key}", "value": "${new_value}" },
+      { "op": "insert", "path": "${/path/to/array/-}", "value": "${new_value}" },
+      { "op": "remove", "path": "${/path/to/object/key}" },
+      { "op": "remove", "path": "${/path/to/array/0}" },
+      { "op": "move", "from": "${/path/to/variable}", "to": "${/path/to/another/path}" },
+      ...
+    ]
+    </JSONPatch>
+    </UpdateVariable>

@@ -1,0 +1,310 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "default": {},
+  "type": "object",
+  "properties": {
+    "世界信息": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "日期": {
+          "default": "",
+          "type": "string"
+        },
+        "时间": {
+          "default": "",
+          "type": "string"
+        },
+        "地点": {
+          "default": "",
+          "type": "string"
+        },
+        "人物": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "人物id"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "姓名": {
+                "default": "",
+                "type": "string"
+              },
+              "与user关系": {
+                "default": "",
+                "type": "string"
+              },
+              "人物状态": {
+                "default": "",
+                "type": "string"
+              },
+              "人物衣着": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "enum": [
+                    "头部",
+                    "上衣",
+                    "下装",
+                    "内衣裤",
+                    "袜子",
+                    "鞋子",
+                    "手持物"
+                  ]
+                },
+                "additionalProperties": {
+                  "default": "",
+                  "type": "string"
+                },
+                "required": [
+                  "头部",
+                  "上衣",
+                  "下装",
+                  "内衣裤",
+                  "袜子",
+                  "鞋子",
+                  "手持物"
+                ]
+              }
+            }
+          }
+        },
+        "环境重要物品": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "物品id"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "名称": {
+                "default": "",
+                "type": "string"
+              },
+              "物品位置": {
+                "default": "",
+                "type": "string"
+              },
+              "物品状态": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "财富": {
+          "default": 0,
+          "type": "number"
+        },
+        "资产": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "资产id"
+          },
+          "additionalProperties": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "名称": {
+                "default": "",
+                "type": "string"
+              },
+              "类型": {
+                "default": "",
+                "type": "string"
+              },
+              "状态": {
+                "default": "",
+                "type": "string"
+              },
+              "备注": {
+                "default": "",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "空间信息": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "账号名称": {
+          "default": "纯情小猫猫",
+          "type": "string"
+        },
+        "个性签名": {
+          "default": "暂无个性签名",
+          "type": "string"
+        },
+        "当前装扮": {
+          "default": "初始空间，空白主页，仅有默认头像和浅色背景，氛围干净但缺少辨识度。",
+          "type": "string"
+        },
+        "人气值": {
+          "default": 0,
+          "type": "number"
+        },
+        "粉丝量": {
+          "default": 0,
+          "type": "number"
+        },
+        "视频数量": {
+          "default": 0,
+          "type": "number"
+        },
+        "是否正在直播": {
+          "default": "否",
+          "type": "string",
+          "enum": [
+            "是",
+            "否"
+          ]
+        },
+        "总打赏": {
+          "default": 0,
+          "type": "number"
+        }
+      }
+    },
+    "视频信息": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "description": "视频id"
+      },
+      "additionalProperties": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "视频标题": {
+            "default": "",
+            "type": "string"
+          },
+          "视频简介": {
+            "default": "",
+            "type": "string"
+          },
+          "时长": {
+            "default": "",
+            "type": "string"
+          },
+          "发布时间": {
+            "default": "",
+            "type": "string"
+          },
+          "播放量": {
+            "default": 0,
+            "type": "number"
+          },
+          "留言": {
+            "default": {},
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "description": "留言id"
+            },
+            "additionalProperties": {
+              "default": {},
+              "type": "object",
+              "properties": {
+                "留言用户": {
+                  "default": "",
+                  "type": "string"
+                },
+                "留言内容": {
+                  "default": "",
+                  "type": "string"
+                },
+                "留言时间": {
+                  "default": "",
+                  "type": "string"
+                },
+                "user的回复": {
+                  "default": "",
+                  "type": "string"
+                },
+                "回复时间": {
+                  "default": "",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "打赏": {
+            "default": {},
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "description": "打赏id"
+            },
+            "additionalProperties": {
+              "default": {},
+              "type": "object",
+              "properties": {
+                "打赏用户": {
+                  "default": "",
+                  "type": "string"
+                },
+                "打赏数额": {
+                  "default": 0,
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "视频内容": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "参演人员": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "description": "参演者id"
+                },
+                "additionalProperties": {
+                  "default": "",
+                  "type": "string"
+                }
+              },
+              "演出地点": {
+                "default": "",
+                "type": "string"
+              },
+              "视频内容": {
+                "default": "",
+                "type": "string"
+              },
+              "重要台词": {
+                "default": {},
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "description": "台词id"
+                },
+                "additionalProperties": {
+                  "default": "",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
