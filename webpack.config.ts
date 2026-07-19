@@ -29,6 +29,7 @@ interface Entry {
   html?: string;
 }
 
+<<<<<<< HEAD
 /** 禁止 Sass 输出 @charset，避免多个 vue 样式块内联进同一 `<style>` 时在中间出现 @charset 触发 CSS 校验错误 */
 const sassLoader = {
   loader: 'sass-loader',
@@ -40,6 +41,11 @@ function parse_entry(script_file: string) {
   const html =
     ['index.ejs', 'index.html'].map(f => path.join(dir, f)).find(f => fs.existsSync(f)) ?? null;
   if (html) {
+=======
+function parse_entry(script_file: string) {
+  const html = path.join(path.dirname(script_file), 'index.html');
+  if (fs.existsSync(html)) {
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
     return { script: script_file, html };
   }
   return { script: script_file };
@@ -190,6 +196,7 @@ function tavern_sync(compiler: webpack.Compiler) {
   });
 }
 
+<<<<<<< HEAD
 /** 与酒馆楼层「正则替换 + $('body').load(url)」兼容：须为普通脚本（非 type=module），且勿使用 CDN 的 ESM external。 */
 function is_jquery_load_compatible_ui(entry: Entry): boolean {
   const norm = entry.script.replace(/\\/g, '/');
@@ -270,11 +277,14 @@ function tavern_embed_base_href(entry: Entry, is_production: boolean): string {
   return `${origin}/dist/${norm_dir}/`;
 }
 
+=======
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
 function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Configuration {
   const should_obfuscate = fs
     .readFileSync(path.join(import.meta.dirname, entry.script), 'utf-8')
     .includes('@obfuscate');
   const script_filepath = path.parse(entry.script);
+<<<<<<< HEAD
   const jquery_load_ui = is_jquery_load_compatible_ui(entry);
   const classic_output = use_classic_script_output(entry);
 
@@ -282,6 +292,13 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
     const is_production_build = argv.mode === 'production';
     return {
     experiments: classic_output ? {} : { outputModule: true },
+=======
+
+  return (_env, argv) => ({
+    experiments: {
+      outputModule: true,
+    },
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
     devtool: argv.mode === 'production' ? 'source-map' : 'eval-source-map',
     watchOptions: {
       ignored: ['**/dist', '**/node_modules'],
@@ -310,6 +327,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
       asyncChunks: true,
       clean: true,
       publicPath: '',
+<<<<<<< HEAD
       ...(classic_output
         ? {}
         : {
@@ -317,6 +335,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
               type: 'module',
             },
           }),
+=======
+      library: {
+        type: 'module',
+      },
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
     },
     module: {
       rules: [
@@ -344,7 +367,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             },
             {
               test: /\.(sa|sc)ss$/,
+<<<<<<< HEAD
               use: ['postcss-loader', sassLoader],
+=======
+              use: ['postcss-loader', 'sass-loader'],
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
               resourceQuery: /raw/,
               type: 'asset/source',
               exclude: /node_modules/,
@@ -378,7 +405,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             },
             {
               test: /\.(sa|sc)ss$/,
+<<<<<<< HEAD
               use: ['postcss-loader', sassLoader],
+=======
+              use: ['postcss-loader', 'sass-loader'],
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
               resourceQuery: /url/,
               type: 'asset/inline',
               exclude: /node_modules/,
@@ -448,7 +479,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       { loader: 'vue-style-loader', options: { ssrId: true } },
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
+<<<<<<< HEAD
                       sassLoader,
+=======
+                      'sass-loader',
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
                     ],
                     exclude: /node_modules/,
                   },
@@ -467,7 +502,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       'style-loader',
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
+<<<<<<< HEAD
                       sassLoader,
+=======
+                      'sass-loader',
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
                     ],
                     exclude: /node_modules/,
                   },
@@ -484,7 +523,11 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
                       MiniCssExtractPlugin.loader,
                       { loader: 'css-loader', options: { url: false } },
                       'postcss-loader',
+<<<<<<< HEAD
                       sassLoader,
+=======
+                      'sass-loader',
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
                     ],
                     exclude: /node_modules/,
                   },
@@ -516,6 +559,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
       ? [new MiniCssExtractPlugin()]
       : [
           new HtmlWebpackPlugin({
+<<<<<<< HEAD
             ...(jquery_load_ui
               ? {
                   templateContent: () =>
@@ -532,6 +576,14 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
           }),
           ...(jquery_load_ui ? [] : [new HtmlInlineScriptWebpackPlugin()]),
           ...(jquery_load_ui ? [pack_jquery_load_ui_html_for_cross_origin_load()] : []),
+=======
+            template: path.join(import.meta.dirname, entry.html),
+            filename: path.parse(entry.html).base,
+            scriptLoading: 'module',
+            cache: false,
+          }),
+          new HtmlInlineScriptWebpackPlugin(),
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
           new MiniCssExtractPlugin(),
           new HTMLInlineCSSWebpackPlugin({
             styleTagFactory({ style }: { style: string }) {
@@ -556,6 +608,10 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             { from: 'klona', imports: ['klona'] },
             { from: 'vue-final-modal', imports: ['useModal'] },
             { from: 'zod', imports: ['z'] },
+<<<<<<< HEAD
+=======
+            { from: 'type-fest', imports: [['*', 'TypeFest']], type: true },
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
           ],
         }),
         unpluginVueComponents({
@@ -648,10 +704,13 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
       ) {
         return callback();
       }
+<<<<<<< HEAD
       /* 独立打开 Live Server 的 index.html 时不存在酒馆注入的全局 $ / z / YAML 等，须先于 global 映射整体打进包 */
       if (jquery_load_ui) {
         return callback();
       }
+=======
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
       const global = {
         jquery: '$',
         lodash: '_',
@@ -668,6 +727,7 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
       const cdn = {
         sass: 'https://jspm.dev/sass',
       };
+<<<<<<< HEAD
       return callback(
         null,
         'module-import ' + (cdn[request as keyof typeof cdn] ?? `https://testingcf.jsdelivr.net/npm/${request}/+esm`),
@@ -675,6 +735,22 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
     },
   };
   };
+=======
+      const package_json = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'package.json'), 'utf-8')) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      const package_versions = { ...package_json.devDependencies, ...package_json.dependencies };
+      const version = package_versions[request]?.replace(/^[~^]/, '');
+      const versioned_request = /^[.\d]+$/.test(version) ? `${request}@${version}` : request;
+      return callback(
+        null,
+        'module-import ' +
+          (cdn[request as keyof typeof cdn] ?? `https://testingcf.jsdelivr.net/npm/${versioned_request}/+esm`),
+      );
+    },
+  });
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
 }
 
 export default config.entries.map(parse_configuration);

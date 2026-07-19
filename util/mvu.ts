@@ -59,6 +59,7 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         { deep: true },
       );
 
+<<<<<<< HEAD
       function syncFromTavern() {
         const stat_data = _.get(getVariables(variable_option), 'stat_data', {});
         const result = schema.safeParse(stat_data);
@@ -82,6 +83,8 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         }
       });
 
+=======
+>>>>>>> a4d60f52b8b1b0f872a80088ba7e339b0933eeb2
       return { data };
     }),
   );
