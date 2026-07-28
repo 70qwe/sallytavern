@@ -28,6 +28,7 @@
   "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
+<<<<<<< HEAD
   "css.lint.unknownProperties": "ignore",
   "css.lint.vendorPrefix": "ignore",
   "html.validate.scripts": false,
@@ -35,6 +36,10 @@
   "files.associations": {
     "*.css": "tailwindcss",
     "dist/**/index.html": "plaintext"
+=======
+  "files.associations": {
+    "*.css": "tailwindcss"
+>>>>>>> 3ee370304f725ffc74d481bb24331e890bad1641
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -51,9 +56,12 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
+<<<<<<< HEAD
   "yaml.schemas": {
     "src/user的末日游戏/character.zh.schema.json": "src/user的末日游戏/index.yaml"
   },
+=======
+>>>>>>> 3ee370304f725ffc74d481bb24331e890bad1641
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
