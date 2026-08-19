@@ -1,4 +1,10 @@
 allowBuilds:
+<<<<<<< HEAD
   '@parcel/watcher': set this to true or false
   unrs-resolver: set this to true or false
   vue-demi: set this to true or false
+=======
+  '@parcel/watcher': true
+  unrs-resolver: true
+  vue-demi: true
+>>>>>>> fe7d6686eaa214f144c2a734be2e26ca399f3d3d
